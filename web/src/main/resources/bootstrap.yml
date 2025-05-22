@@ -1,0 +1,56 @@
+spring:
+  application:
+    name: bit-mitra-service-lsit
+  profiles:
+    active: lsit
+  output:
+    ansi:
+      enabled: ALWAYS
+  jmx:
+    enabled: false
+  mvc:
+    throw-exception-if-no-handler-found: true
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+    web-application-type: reactive
+  web:
+    resources:
+      add-mappings: false
+
+  cloud:
+    config:
+      uri: ${CONFIG_URL:http://10.1.0.174:8800}
+      fail-fast: true
+      retry:
+        max-attempts: 20
+        max-interval: 15000
+        initial-interval: 10000
+
+  flyway:
+    enabled: false
+
+eureka:
+  client:
+    enabled: true
+    webclient:
+      enabled: true
+    register-with-eureka: true
+    fetch-registry: true
+    preferSameZoneEureka: true
+    #    healthcheck:
+    #      enabled: true
+    serviceUrl:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://10.1.0.174:8761/eureka}
+  instance:
+    # hostname: localhost
+    prefer-ip-address: true
+    # secure-port-enabled: false
+    # non-secure-port-enabled: true
+    #    non-secure-port: 9191
+    # secure-port: 443
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 30
+    #    health-check-url-path: /actuator/health
+    metadataMap:
+      zone: ${EUREKA_ZONE:on-premise}

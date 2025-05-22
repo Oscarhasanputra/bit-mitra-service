@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.bit</groupId>
+		<artifactId>microservices</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+	</parent>
+	<groupId>com.bit.microservices</groupId>
+	<artifactId>bit-mitra-service</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>bit-mitra-service</name>
+	<description>BIT Mitra Service</description>
+	<properties>
+		<main.basedir>${basedir}/../..</main.basedir>
+		<bit-mitra.model.version>0.0.1-SNAPSHOT</bit-mitra.model.version>
+	</properties>
+	<repositories>
+		<repository>
+			<id>b2b-microservices-group</id>
+			<url>http://10.1.0.174:8180/repository/b2b-microservices-group/</url>
+		</repository>
+		<repository>
+			<id>bit-microservices</id>
+			<url>http://10.1.0.181:8180/repository/bit-microservices/</url>
+		</repository>
+	</repositories>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>b2b-microservices-snapshot</id>
+			<url>http://10.1.0.174:8180/repository/b2b-microservices-snapshot/</url>
+		</snapshotRepository>
+		<repository>
+			<id>b2b-microservices-release</id>
+			<url>http://10.1.0.174:8180/repository/b2b-microservices-release/</url>
+		</repository>
+	</distributionManagement>
+	<modules>
+		<module>web</module>
+		<module>model</module>
+	</modules>
+</project>

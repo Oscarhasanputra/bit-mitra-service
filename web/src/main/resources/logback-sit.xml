@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<contextname>logback</contextname>
+
+	<property name="LOGS" value="./logs" />
+
+	<appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>[%thread] %-5level %logger{48}.%M [%file: %line] - %msg%n</pattern>
+		</encoder>
+	</appender>
+	<root level="INFO">
+		<appender-ref ref="Console" />
+	</root>
+	<logger name="org.apache.kafka" level="INFO" additivity="false">
+		<appender-ref ref="Console" />
+	</logger>
+	<logger name="org.springframework.cloud" level="INFO" additivity="false">
+		<appender-ref ref="Console" />
+	</logger>
+	<logger name="org.springframework.security" level="INFO" additivity="false">
+		<appender-ref ref="Console" />
+	</logger>
+	<logger name="net.ttddyy.dsproxy.listener" level="DEBUG" additivity="false">
+		<appender-ref ref="Console" />
+	</logger>
+	<logger name="com.bit.microservices" level="DEBUG" additivity="false">
+		<appender-ref ref="Console" />
+	</logger>
+
+</configuration>

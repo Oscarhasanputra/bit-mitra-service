@@ -1,0 +1,30 @@
+clusterServersConfig:
+  idleConnectionTimeout: 30000
+  connectTimeout: 60000
+  timeout: 30000
+  retryAttempts: 3
+  retryInterval: 1000
+  failedSlaveReconnectionInterval: 30000
+  password: null
+  clientName: null
+  subscriptionsPerConnection: 5
+  subscriptionConnectionMinimumIdleSize: 1
+  subscriptionConnectionPoolSize: 50
+  slaveConnectionMinimumIdleSize: 24
+  slaveConnectionPoolSize: 64
+  masterConnectionMinimumIdleSize: 24
+  masterConnectionPoolSize: 64
+  readMode: "MASTER"
+  subscriptionMode: "MASTER"
+  nodeAddresses:
+  - "redis://b2b-redis-0001-001.mumvjr.0001.apse1.cache.amazonaws.com:6379"
+  - "redis://b2b-redis-0001-002.mumvjr.0001.apse1.cache.amazonaws.com:6379"
+  - "redis://b2b-redis-0001-003.mumvjr.0001.apse1.cache.amazonaws.com:6379"
+  - "redis://b2b-redis-0001-004.mumvjr.0001.apse1.cache.amazonaws.com:6379"
+  scanInterval: 10000
+  pingConnectionInterval: 30000
+  keepAlive: false
+  tcpNoDelay: true
+threads: 16
+nettyThreads: 32
+transportMode: "NIO"

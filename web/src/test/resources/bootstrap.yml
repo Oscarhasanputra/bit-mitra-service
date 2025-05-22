@@ -1,0 +1,181 @@
+server:
+  http2:
+    enabled: true
+  address: 0.0.0.0
+  port: 7006
+  forward-headers-strategy: framework
+  netty:
+    connection-timeout: 60000
+
+spring:
+  application:
+    name: bit-mitra-service-test
+  profiles:
+    active: test
+
+  output:
+    ansi:
+      enabled: ALWAYS
+  jmx:
+    enabled: false
+  mvc:
+    throw-exception-if-no-handler-found: true
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+    web-application-type: reactive
+  web:
+    resources:
+      add-mappings: false
+
+  cloud:
+    config:
+      uri: ${CONFIG_URL:http://10.1.0.174:8800}
+      fail-fast: true
+      retry:
+        max-attempts: 20
+        max-interval: 15000
+        initial-interval: 10000
+
+  cache:
+    type: redis
+    cache-names: >-
+      user
+    redis:
+      time-to-live: 300000
+      enable-statistics: true
+      key-prefix: user
+      use-key-prefix: true
+
+  jpa:
+    database: POSTGRESQL
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      org:
+        hibernate:
+          envers:
+            store_data_at_delete: true
+            do_not_audit_optimistic_locking_field: false
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        id:
+          db_structure_naming_strategy: legacy
+        cache:
+          use_second_level_cache: true
+          use_structured_entries: true
+          redisson:
+            config: redisson-sit.yml
+            b2b-account-l2:
+              expiration:
+                time_to_live: 60000
+                max_idle_time: 60000
+          region_prefix: user-l2
+          region:
+            factory_class: org.redisson.hibernate.RedissonRegionFactory
+        jdbc:
+          lob:
+            non_contextual_creation: true
+          batch_size: 100
+          time_zone: UTC
+      javax:
+        persistence:
+          validation:
+            mode: none
+
+  redis:
+    host: 10.1.0.174
+    password:
+    port: 6379
+    defaultExpire: 600000
+    pool:
+      max-idle: 8
+      min-idle: 0
+      max-active: -1
+      max-wait: -1
+    cluster:
+      nodes: >-
+        b2b-redis-sit-0001-001.mumvjr.0001.apse1.cache.amazonaws.com:6379
+
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://b2b-sit.cc2jtqqitlmv.ap-southeast-1.rds.amazonaws.com:5432/BIT_USER_SIT
+    driverClassName: org.postgresql.Driver
+    username: postgres
+    password: B2BCocaCola
+    hikari:
+      minimumIdle: 1
+      maximumPoolSize: 32
+      idleTimeout: 10000
+      connectionTimeout: 300000
+      leakDetectionThreshold: 300000
+      connection-test-query: SELECT 1
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: public
+        current_session_context_class: thread
+        format_sql: true
+      javax:
+        persistence:
+          validation:
+            mode: none
+    configuration:
+      maximum-pool-size: 32
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://login-sit.bhakti.co.id:8443/realms/bit
+      token:
+        validity-seconds: 3600
+        refresh-validity-seconds: 10800
+      whitelist-path:
+        - /swagger-ui/**
+
+eureka:
+  client:
+    enabled: true
+    webclient:
+      enabled: true
+    register-with-eureka: true
+    fetch-registry: true
+    preferSameZoneEureka: true
+    #    healthcheck:
+    #      enabled: true
+    serviceUrl:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://10.1.0.174:8761/eureka}
+  instance:
+    # hostname: localhost
+    prefer-ip-address: true
+    # secure-port-enabled: false
+    # non-secure-port-enabled: true
+    #    non-secure-port: 9191
+    # secure-port: 443
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 30
+    #    health-check-url-path: /actuator/health
+    metadataMap:
+      zone: ${EUREKA_ZONE:on-premise}
+
+logging:
+  config: classpath:logback-${ACTIVE_PROFILE:sit}.xml
+
+springdoc:
+  webjars:
+    prefix: null
+  api-docs:
+    version: openapi_3_0
+    resolve-schema-properties: true
+    enabled: true
+    groups:
+      enabled: true
+  swagger-ui:
+    use-root-path: false
+    enabled: true
+    path: /autonumber/swagger-ui.html
+    url: /autonumber/v3/api-docs
