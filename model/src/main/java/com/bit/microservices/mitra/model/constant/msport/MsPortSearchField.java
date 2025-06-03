@@ -1,0 +1,43 @@
+package com.bit.microservices.mitra.model.constant.msport;
+
+import com.bit.microservices.mitra.model.constant.EnumAction;
+import com.bit.microservices.mitra.model.constant.FilterColumnRequestType;
+import com.bit.microservices.mitra.model.constant.response_code.EnumColumnFilterBy;
+import com.querydsl.core.types.Path;
+import lombok.Getter;
+
+import java.io.Serializable;
+
+@Getter
+public enum MsPortSearchField implements EnumColumnFilterBy {
+
+    CODE(null, null, "code", "code", FilterColumnRequestType.STRING, null),
+    NAME(null, null, "name", "name", FilterColumnRequestType.STRING, null),
+    COUNTRY(null, null, "country", "country", FilterColumnRequestType.STRING, null),
+    CITY(null, null, "city", "city", FilterColumnRequestType.STRING, null),
+    TYPE(null, null, "type", "type", FilterColumnRequestType.ENUM, PortTypeEnum.class),
+    DELETED(null, null, "isDeleted", "deleted", FilterColumnRequestType.BOOLEAN, null),
+    ACTIVE(null, null, "isActive", "active", FilterColumnRequestType.BOOLEAN, null)
+    ;
+
+    private final Class<?> childPath;
+
+    private final Path<?> path;
+
+    private final String nameColumn;
+
+    private final String requestName;
+
+    private final FilterColumnRequestType type;
+
+    private final Class<? extends EnumAction> enumClass;
+
+    MsPortSearchField(Class<? extends Serializable> childPath, Path<?> path, String nameColumn, String requestName, FilterColumnRequestType type, Class<? extends EnumAction> enumClass) {
+        this.childPath = childPath;
+        this.path = path;
+        this.nameColumn = nameColumn;
+        this.requestName = requestName;
+        this.type = type;
+        this.enumClass = enumClass;
+    }
+}

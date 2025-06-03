@@ -1,11 +1,9 @@
 package com.bit.microservices.mitra.repository.impl;
 
 import com.bit.microservices.mitra.model.constant.country.CountrySearchField;
-import com.bit.microservices.mitra.model.entity.QMsCountry;
 import com.bit.microservices.mitra.model.entity.QMsCurrency;
-import com.bit.microservices.mitra.model.response.country.CountryListDTO;
 import com.bit.microservices.mitra.model.response.currency.CurrencyListDTO;
-import com.bit.microservices.mitra.redis.FilterByBooleanExpression;
+import com.bit.microservices.mitra.utils.FilterByBooleanExpression;
 import com.bit.microservices.mitra.repository.QMsCurrencyRepository;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
@@ -20,7 +18,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 

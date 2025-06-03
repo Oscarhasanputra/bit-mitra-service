@@ -4,7 +4,7 @@ import com.bit.microservices.exception.ExceptionPrinter;
 import com.bit.microservices.mitra.command.bank.CreateMsBankCommand;
 import com.bit.microservices.mitra.command.global.reactive.AbstractMitraCommand;
 import com.bit.microservices.mitra.exception.BadRequestException;
-import com.bit.microservices.mitra.exception.BaseException;
+import com.bit.microservices.mitra.exception.MetadataCollectibleException;
 import com.bit.microservices.mitra.mapper.MsBankMapper;
 import com.bit.microservices.mitra.model.constant.CrudCodeEnum;
 import com.bit.microservices.mitra.model.constant.ModuleCodeEnum;
@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.*;
-import java.util.function.Predicate;
 
 @Component
 @Slf4j
@@ -47,7 +46,7 @@ public class CreateMsBankCommandImpl extends AbstractMitraCommand implements Cre
         for (MsBankCreateRequestDTO request : requests) {
             try{
                 if(codeSavedlist.contains(request.getCode())){
-                    throw new BaseException(module,crud,ResponseCodeMessageEnum.FAILED_CONCURRENCY_DETECTED,"");
+                    throw new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_CONCURRENCY_DETECTED,"");
                 }
                 codeSavedlist.add(request.getCode());
 
@@ -65,15 +64,15 @@ public class CreateMsBankCommandImpl extends AbstractMitraCommand implements Cre
                 }
 
                 if(!Objects.isNull(msbankMap.get(request.getCode()))){
-                    throw new BaseException(module,crud,ResponseCodeMessageEnum.FAILED_DETAIL_ALREADY_EXIST,"Code");
+                    throw new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_DETAIL_ALREADY_EXIST,"Code");
                 }
                 else if(!Objects.isNull(msbankMap.get(request.getSwiftCode()))){
 
-                    throw new BaseException(module,crud,ResponseCodeMessageEnum.FAILED_DETAIL_ALREADY_EXIST,"Swift Code");
+                    throw new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_DETAIL_ALREADY_EXIST,"Swift Code");
                 }
                 else if(!Objects.isNull(msbankMap.get(request.getBiCode()))){
 
-                    throw new BaseException(module,crud,ResponseCodeMessageEnum.FAILED_DETAIL_ALREADY_EXIST,"BI Code");
+                    throw new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_DETAIL_ALREADY_EXIST,"BI Code");
                 }
 
                 MsBank dataCreated = this.msBankMapper.toEntity(request);
@@ -89,7 +88,7 @@ public class CreateMsBankCommandImpl extends AbstractMitraCommand implements Cre
                 responseList.add(baseResponseDTO);
 
             }
-            catch (BaseException err){
+            catch (MetadataCollectibleException err){
                 BaseResponseDTO errorResponse =  this.operationalFailed(request.getCode(),err.getModuleCodeEnum(),err.getCrudCodeEnum(),err.getResponseCodeMessageEnum(),err.getMessage());
                 errorList.add(errorResponse);
             }

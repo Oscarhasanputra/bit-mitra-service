@@ -10,7 +10,7 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-public class BaseException extends RuntimeException implements Serializable {
+public class MetadataCollectibleException extends RuntimeException implements Serializable {
 
     protected final ResponseCodeMessageEnum responseCodeMessageEnum;
 
@@ -20,7 +20,7 @@ public class BaseException extends RuntimeException implements Serializable {
     protected final String message;
 
 
-    public BaseException(ModuleCodeEnum moduleCodeEnum,CrudCodeEnum crudCodeEnum,ResponseCodeMessageEnum responseCodeMessageEnum, String message){
+    public MetadataCollectibleException(ModuleCodeEnum moduleCodeEnum, CrudCodeEnum crudCodeEnum, ResponseCodeMessageEnum responseCodeMessageEnum, String message){
         super(message);
         this.responseCodeMessageEnum = responseCodeMessageEnum;
         this.moduleCodeEnum=moduleCodeEnum;

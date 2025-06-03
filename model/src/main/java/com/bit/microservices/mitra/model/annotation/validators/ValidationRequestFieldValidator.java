@@ -15,7 +15,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-@Slf4j
 public class ValidationRequestFieldValidator implements ConstraintValidator<ValidationRequestField, Object> {
 
     private boolean notEqualALLString;
@@ -25,15 +24,18 @@ public class ValidationRequestFieldValidator implements ConstraintValidator<Vali
     private boolean notBlank;
     private boolean notZero;
     private boolean mustContainTilde;
-
-
     private boolean mustContainAlphanumeric;
 
+    private boolean mustContainNumeric;
+    private boolean mustValidEmail;
+    private boolean mustValidMobile;
     private FieldType fieldType;
     private Class<? extends EnumAction> enumClass;
 
     @Override
     public void initialize(ValidationRequestField constraintAnnotation) {
+        this.notEqualALLString = constraintAnnotation.notEqualALLString();
+        this.notContainWhitespace = constraintAnnotation.notContainWhitespace();
         this.notNull = constraintAnnotation.notNull();
         this.notEmpty = constraintAnnotation.notEmpty();
         this.notBlank = constraintAnnotation.notBlank();
@@ -42,8 +44,10 @@ public class ValidationRequestFieldValidator implements ConstraintValidator<Vali
         this.notZero = constraintAnnotation.notZero();
         this.mustContainTilde = constraintAnnotation.mustContainTilde();
         this.mustContainAlphanumeric = constraintAnnotation.mustContainAlphanumeric();
-        this.notContainWhitespace = constraintAnnotation.notContainWhitespace();
-        this.notEqualALLString = constraintAnnotation.notEqualALLString();
+        this.mustValidEmail = constraintAnnotation.mustValidEmail();
+        this.mustValidMobile = constraintAnnotation.mustValidMobile();
+        this.mustContainNumeric = constraintAnnotation.mustContainNumeric();
+
     }
 
     @Override
@@ -65,43 +69,33 @@ public class ValidationRequestFieldValidator implements ConstraintValidator<Vali
             case ISO_DATE_TIME -> validateIsoDateTime(value, context);
             case BOOLEAN -> validateBoolean(value, context);
             case ENUM -> validateEnumField(value, context);
-            case EMAIL -> validateEmailField(value, context);
             case LOCAL_DATE -> validateLocalDate(value, context);
             case JSON_NODE -> validateJsonNode(value, context);
-            case LIST -> validateList(value,context);
+            case LIST -> validateList(value, context);
             default -> fieldTypeNotFilled(context);
         };
-    }
-
-    private boolean validateEmailField(Object value, ConstraintValidatorContext context) {
-        boolean response = true;
-
-        if (!(value instanceof String str)) {
-            context.buildConstraintViolationWithTemplate(ResponseCodeMessageEnum.FAILED_INVALID_TYPE.name()).addConstraintViolation();
-            return false;
-        }
-
-        if (notEmpty && str.isEmpty()) {
-            context.buildConstraintViolationWithTemplate(ResponseCodeMessageEnum.FAILED_INVALID_CANNOT_EMPTY.name()).addConstraintViolation();
-            return false;
-        }
-
-        if (notBlank && str.isBlank()) {
-            context.buildConstraintViolationWithTemplate(ResponseCodeMessageEnum.FAILED_INVALID_CANNOT_EMPTY.name()).addConstraintViolation();
-            return false;
-        }
-
-        if (!str.matches("^[^@\\s]+@[^@\\s.]+\\.[^@\\s]+$")) {
-            context.buildConstraintViolationWithTemplate(ResponseCodeMessageEnum.FAILED_INVALID_EMAIL.name()).addConstraintViolation();
-            return false;
-        }
-
-        return response;
     }
 
     private boolean validateJsonNode(Object value, ConstraintValidatorContext context){
         boolean response = true;
         if (value instanceof JsonNode json){
+            if (notEmpty && json.isEmpty()){
+                context.buildConstraintViolationWithTemplate(ResponseCodeMessageEnum.FAILED_INVALID_CANNOT_EMPTY.name())
+                        .addConstraintViolation();
+                response = false;
+            }
+        }else{
+            context.buildConstraintViolationWithTemplate(ResponseCodeMessageEnum.FAILED_INVALID_TYPE.name())
+                    .addConstraintViolation();
+            response = false;
+        }
+
+        return response;
+    }
+
+    private boolean validateList(Object value, ConstraintValidatorContext context){
+        boolean response = true;
+        if (value instanceof List<?> json){
             if (notEmpty && json.isEmpty()){
                 context.buildConstraintViolationWithTemplate(ResponseCodeMessageEnum.FAILED_INVALID_CANNOT_EMPTY.name())
                         .addConstraintViolation();
@@ -195,7 +189,20 @@ public class ValidationRequestFieldValidator implements ConstraintValidator<Vali
             context.buildConstraintViolationWithTemplate(ResponseCodeMessageEnum.FAILED_MUST_CONTAIN_ALPHANUMERIC.name()).addConstraintViolation();
             response = false;
         }
+        if (mustContainNumeric && !str.matches("^[0-9]+$")) {
+            context.buildConstraintViolationWithTemplate(ResponseCodeMessageEnum.FAILED_MUST_CONTAIN_ALPHANUMERIC.name()).addConstraintViolation();
+            response = false;
+        }
 
+        if (mustValidEmail && !str.matches("^[^@\\s]+@[^@\\s.]+\\.[^@\\s]+$")) {
+            context.buildConstraintViolationWithTemplate(ResponseCodeMessageEnum.FAILED_INVALID_EMAIL.name()).addConstraintViolation();
+            return false;
+        }
+
+        if (mustValidMobile && !str.matches("^[+0]\\d+$")) {
+            context.buildConstraintViolationWithTemplate(ResponseCodeMessageEnum.FAILED_INVALID_TYPE.name()).addConstraintViolation();
+            return false;
+        }
 
         return response;
     }
@@ -251,23 +258,6 @@ public class ValidationRequestFieldValidator implements ConstraintValidator<Vali
         context.buildConstraintViolationWithTemplate(ResponseCodeMessageEnum.FAILED_FIELD_CANNOT_NULL.name()).addConstraintViolation();
         return false;
     }
-
-    private boolean validateList(Object value, ConstraintValidatorContext context) {
-        boolean response = true;
-        if (!(value instanceof List<?>)) {
-            context.buildConstraintViolationWithTemplate(ResponseCodeMessageEnum.FAILED_INVALID_TYPE.name()).addConstraintViolation();
-           return false;
-        }
-        List<?> list = (List) value;
-
-        if (notEmpty && list.isEmpty()) {
-            context.buildConstraintViolationWithTemplate(ResponseCodeMessageEnum.FAILED_INVALID_CANNOT_EMPTY.name()).addConstraintViolation();
-            return false;
-        }
-
-        return response;
-    }
-
 
 
 }

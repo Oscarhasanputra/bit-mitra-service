@@ -14,11 +14,14 @@ import com.bit.microservices.mitra.model.entity.MsCountry;
 import com.bit.microservices.mitra.model.request.MandatoryHeaderRequestDTO;
 import com.bit.microservices.mitra.model.request.city.CountryIDRequestDTO;
 import com.bit.microservices.mitra.model.response.BaseGetResponseDTO;
+import com.bit.microservices.mitra.model.response.BaseResponseDTO;
 import com.bit.microservices.mitra.repository.MsCountryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Component
 @Slf4j
@@ -36,7 +39,7 @@ public class SyncCityCommandReactiveImpl implements SyncCityCommandReactive {
 
 
     @Override
-    public Mono<BaseGetResponseDTO> execute(CountryIDRequestDTO request, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
+    public Mono<List<BaseResponseDTO>> execute(CountryIDRequestDTO request, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
 
         return Mono.just(request).flatMap((req)->{
             MsCountry msCountry = this.msCountryRepository.findById(request.getCountryId()).orElseThrow(()->{
@@ -53,7 +56,11 @@ public class SyncCityCommandReactiveImpl implements SyncCityCommandReactive {
                                     cityByCountryDTO,module,crud,mandatoryHeaderRequestDTO)
                         );
             }).onErrorResume((exception)->{
-                        return Mono.error(new BadRequestException(module,crud,ResponseCodeMessageEnum.FAILED_CUSTOM,exception.getMessage()));
+                if(exception instanceof BadRequestException){
+                    return Mono.error(exception);
+                }else{
+                    return Mono.error(new BadRequestException(module,crud,ResponseCodeMessageEnum.FAILED_CUSTOM,exception.getMessage()));
+                }
             });
         });
     }

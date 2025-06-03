@@ -1,10 +1,9 @@
 package com.bit.microservices.mitra.controller;
 
 import com.bit.microservices.mitra.command.bank.CreateMsBankCommand;
-import com.bit.microservices.mitra.command.bank.reactive.ActivateMsBankCommandReactive;
-import com.bit.microservices.mitra.command.bank.reactive.GetListMsBankCommandReactive;
-import com.bit.microservices.mitra.command.bank.reactive.GetMsBankCommandReactive;
-import com.bit.microservices.mitra.command.bank.reactive.UpdateMsBankCommandReactive;
+import com.bit.microservices.mitra.command.bank.DeleteMsBankCommand;
+import com.bit.microservices.mitra.command.bank.impl.DeleteMsBankCommandImpl;
+import com.bit.microservices.mitra.command.bank.reactive.*;
 import com.bit.microservices.mitra.command.city.reactive.SyncCityCommandReactive;
 import com.bit.microservices.mitra.command.executor.CommandExecutor;
 import com.bit.microservices.mitra.filter.ReactiveSecurityContextHolderData;
@@ -13,10 +12,7 @@ import com.bit.microservices.mitra.model.constant.CrudCodeEnum;
 import com.bit.microservices.mitra.model.constant.ModuleCodeEnum;
 import com.bit.microservices.mitra.model.constant.ResponseCodeMessageEnum;
 import com.bit.microservices.mitra.model.constant.ResponseStatusEnum;
-import com.bit.microservices.mitra.model.request.ActivateRequestDTO;
-import com.bit.microservices.mitra.model.request.GetSingleRequestDTO;
-import com.bit.microservices.mitra.model.request.MandatoryHeaderRequestDTO;
-import com.bit.microservices.mitra.model.request.SearchRequestDTO;
+import com.bit.microservices.mitra.model.request.*;
 import com.bit.microservices.mitra.model.request.bank.MsBankCreateRequestDTO;
 import com.bit.microservices.mitra.model.request.bank.MsBankUpdateRequestDTO;
 import com.bit.microservices.mitra.model.request.city.CountryIDRequestDTO;
@@ -57,7 +53,7 @@ public class BankController {
     ) {
         MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO = new MandatoryHeaderRequestDTO(flowId,validateOnly);
         return ReactiveSecurityContextHolderData.assignContextData(
-                commandExecutor.executeAsReactive(CreateMsBankCommand.class, requestDTO, MODULE, CrudCodeEnum.SYNC_CODE,mandatoryHeaderRequestDTO)
+                commandExecutor.executeAsReactive(CreateMsBankCommand.class, requestDTO, MODULE, CrudCodeEnum.CREATE_CODE,mandatoryHeaderRequestDTO)
                         .map(response -> {
 
                             return ResponseEntity.ok(new MainResponseDTO<>(ResponseStatusEnum.SUCCESS.responseMessage, ResponseStatusEnum.SUCCESS.code, response));
@@ -76,7 +72,7 @@ public class BankController {
     ) {
         MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO = new MandatoryHeaderRequestDTO(flowId,validateOnly);
         return ReactiveSecurityContextHolderData.assignContextData(
-                        commandExecutor.executeReactive(ActivateMsBankCommandReactive.class, requestDTO, MODULE, CrudCodeEnum.SYNC_CODE,mandatoryHeaderRequestDTO)
+                        commandExecutor.executeReactive(ActivateMsBankCommandReactive.class, requestDTO, MODULE, CrudCodeEnum.ACTIVATE_CODE,mandatoryHeaderRequestDTO)
                                 .map(response -> {
                                     return ResponseEntity.ok(new MainResponseDTO<>(ResponseStatusEnum.SUCCESS.responseMessage, ResponseStatusEnum.SUCCESS.code, response));
                                 })
@@ -94,13 +90,29 @@ public class BankController {
             @RequestBody List<MsBankUpdateRequestDTO> requestDTO
     ) {
         MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO = new MandatoryHeaderRequestDTO(flowId,validateOnly);
-        return commandExecutor.executeReactive(UpdateMsBankCommandReactive.class, requestDTO, MODULE, CrudCodeEnum.SYNC_CODE,mandatoryHeaderRequestDTO)
+        return commandExecutor.executeReactive(UpdateMsBankCommandReactive.class, requestDTO, MODULE, CrudCodeEnum.UPDATE_CODE,mandatoryHeaderRequestDTO)
                 .map(response -> {
                     return ResponseEntity.ok(new MainResponseDTO<>(ResponseStatusEnum.SUCCESS.responseMessage, ResponseStatusEnum.SUCCESS.code, response));
                 })
                 .doOnError(unused -> log.error(flowId))
                 .subscribeOn(Schedulers.boundedElastic());
     }
+    @PostMapping("/delete")
+    @Operation(summary = "", description = "", tags = {"Bank"})
+    public Mono<ResponseEntity<MainResponseDTO<List<BaseResponseDTO>>>> deleteBank(
+            @RequestHeader(name = "X-FLOW-ID", required = false) String flowId,
+            @RequestHeader(name = "X-VALIDATE-ONLY", required = false) String validateOnly,
+            @RequestBody List<DeleteRequestDTO> requestDTO
+    ) {
+        MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO = new MandatoryHeaderRequestDTO(flowId,validateOnly);
+        return commandExecutor.executeReactive(DeleteMsBankCommandReactive.class, requestDTO, MODULE, CrudCodeEnum.DELETE_CODE,mandatoryHeaderRequestDTO)
+                .map(response -> {
+                    return ResponseEntity.ok(new MainResponseDTO<>(ResponseStatusEnum.SUCCESS.responseMessage, ResponseStatusEnum.SUCCESS.code, response));
+                })
+                .doOnError(unused -> log.error(flowId))
+                .subscribeOn(Schedulers.boundedElastic());
+    }
+
 
     @PostMapping("/get")
     @Operation(summary = "", description = "", tags = {"Bank"})
@@ -110,7 +122,7 @@ public class BankController {
             @RequestBody GetSingleRequestDTO requestDTO
             ) {
         MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO = new MandatoryHeaderRequestDTO(flowId,validateOnly);
-        return commandExecutor.executeReactive(GetMsBankCommandReactive.class, requestDTO, MODULE, CrudCodeEnum.SYNC_CODE,mandatoryHeaderRequestDTO)
+        return commandExecutor.executeReactive(GetMsBankCommandReactive.class, requestDTO, MODULE, CrudCodeEnum.GET_CODE,mandatoryHeaderRequestDTO)
                 .map(response -> {
                     return ResponseEntity.ok(response);
                 })
@@ -126,7 +138,7 @@ public class BankController {
             @RequestBody SearchRequestDTO searchRequestDTO
             ) {
         MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO = new MandatoryHeaderRequestDTO(flowId,validateOnly);
-        return commandExecutor.executeReactive(GetListMsBankCommandReactive.class,searchRequestDTO, MODULE, CrudCodeEnum.SYNC_CODE,mandatoryHeaderRequestDTO)
+        return commandExecutor.executeReactive(GetListMsBankCommandReactive.class,searchRequestDTO, MODULE, CrudCodeEnum.GETLIST_CODE,mandatoryHeaderRequestDTO)
                 .map(response -> {
                     return ResponseEntity.ok(
                             new BaseGetResponseDTO<>(

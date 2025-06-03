@@ -23,6 +23,9 @@ public @interface ValidationRequestField {
   boolean notZero() default false;
   boolean mustContainTilde() default false;
   boolean mustContainAlphanumeric() default false;
+  boolean mustContainNumeric() default false;
+  boolean mustValidEmail() default false;
+  boolean mustValidMobile() default false;
   FieldType fieldType();
   Class<? extends EnumAction> enumClass() default EnumAction.class;
 

@@ -4,7 +4,7 @@ import com.bit.microservices.exception.ExceptionPrinter;
 import com.bit.microservices.mitra.command.bank.UpdateMsBankCommand;
 import com.bit.microservices.mitra.command.global.reactive.AbstractMitraCommand;
 import com.bit.microservices.mitra.exception.BadRequestException;
-import com.bit.microservices.mitra.exception.BaseException;
+import com.bit.microservices.mitra.exception.MetadataCollectibleException;
 import com.bit.microservices.mitra.mapper.MsBankMapper;
 import com.bit.microservices.mitra.model.constant.CrudCodeEnum;
 import com.bit.microservices.mitra.model.constant.ModuleCodeEnum;
@@ -45,19 +45,19 @@ public class UpdateMsBankCommandImpl extends AbstractMitraCommand implements Upd
         for (MsBankUpdateRequestDTO request : requests) {
             try {
                 if(codeSavedlist.contains(request.getId())){
-                    throw new BaseException(module,crud,ResponseCodeMessageEnum.FAILED_CONCURRENCY_DETECTED,"");
+                    throw new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_CONCURRENCY_DETECTED,"");
                 }
                 codeSavedlist.add(request.getId());
                 MsBank msBank = this.msBankRepository.findByIdAndIsDeleted(request.getId(),false).orElseThrow(()->{
-                    return new BaseException(module,crud,ResponseCodeMessageEnum.FAILED_DATA_NOT_EXIST,"");
+                    return new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_DATA_NOT_EXIST,"");
                 });
 
                 if(!msBank.getIsActive()){
-                    throw new BaseException(module,crud,ResponseCodeMessageEnum.FAILED_CANNOT_ACTIVATE,"");
+                    throw new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_CANNOT_ACTIVATE,"");
                 }
 
                 if(!msBank.getCode().equals(request.getCode())){
-                    throw new BaseException(module,crud,ResponseCodeMessageEnum.FAILED_INCONSISTENT_CODE,"");
+                    throw new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_INCONSISTENT_CODE,"");
                 }
 
 
@@ -74,7 +74,7 @@ public class UpdateMsBankCommandImpl extends AbstractMitraCommand implements Upd
                 );
                 responseList.add(baseResponseDTO);
 
-            }catch (BaseException err){
+            }catch (MetadataCollectibleException err){
                 BaseResponseDTO errorResponse =  this.operationalFailed(request.getId(),err.getModuleCodeEnum(),err.getCrudCodeEnum(),err.getResponseCodeMessageEnum(),err.getMessage());
                 errorList.add(errorResponse);
             }

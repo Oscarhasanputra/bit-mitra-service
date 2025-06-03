@@ -12,13 +12,13 @@
 		</appender>  
 	
 	    <appender name="RollingFile"  class="ch.qos.logback.core.rolling.RollingFileAppender">
-			<file>${LOGS}/bit-user/logger.log</file>
+			<file>${LOGS}/bit-mitra/logger.log</file>
 			<encoder>
 				<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS, Asia/Jakarta} [%thread] %-5level %logger.%M [%file: %line] - %msg%n</pattern>
 			</encoder>
 			<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 				<!-- rollover daily and when the file reaches 10 MegaBytes -->
-				<fileNamePattern>${LOGS}/bit-user/archived/logger-%d{yyyy-MM-dd, Asia/Jakarta}-%i.log</fileNamePattern>
+				<fileNamePattern>${LOGS}/bit-mitra/archived/logger-%d{yyyy-MM-dd, Asia/Jakarta}-%i.log</fileNamePattern>
 				<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFileNamingAndTriggeringPolicy">
 					<maxFileSize>10MB</maxFileSize>
 				</timeBasedFileNamingAndTriggeringPolicy>

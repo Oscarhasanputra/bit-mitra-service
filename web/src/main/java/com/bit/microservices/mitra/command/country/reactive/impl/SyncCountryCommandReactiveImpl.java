@@ -16,6 +16,7 @@ import com.bit.microservices.mitra.model.constant.ResponseStatusEnum;
 import com.bit.microservices.mitra.model.entity.MsCountry;
 import com.bit.microservices.mitra.model.request.MandatoryHeaderRequestDTO;
 import com.bit.microservices.mitra.model.response.BaseGetResponseDTO;
+import com.bit.microservices.mitra.model.response.BaseResponseDTO;
 import com.bit.microservices.mitra.repository.MsCountryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 @Component
@@ -39,7 +41,7 @@ public class SyncCountryCommandReactiveImpl implements SyncCountryCommandReactiv
     private CommandExecutor commandExecutor;
 
     @Override
-    public Mono<BaseGetResponseDTO> execute(Void request, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
+    public Mono<List<BaseResponseDTO>> execute(Void request, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
 
         return this.httpService.getListCountry().flatMap(
                 countryList ->{
@@ -48,7 +50,11 @@ public class SyncCountryCommandReactiveImpl implements SyncCountryCommandReactiv
                     );
                 }
         ).onErrorResume((exception)->{
-            return Mono.error(new BadRequestException(module,crud,ResponseCodeMessageEnum.FAILED_CUSTOM,exception.getMessage()));
+            if(exception instanceof BadRequestException){
+                return Mono.error(exception);
+            }else{
+                return Mono.error(new BadRequestException(module,crud,ResponseCodeMessageEnum.FAILED_CUSTOM,exception.getMessage()));
+            }
         })
                 ;
     }

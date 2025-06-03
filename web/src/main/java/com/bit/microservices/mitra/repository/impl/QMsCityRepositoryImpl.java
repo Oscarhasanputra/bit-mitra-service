@@ -2,10 +2,8 @@ package com.bit.microservices.mitra.repository.impl;
 
 import com.bit.microservices.mitra.model.constant.country.CountrySearchField;
 import com.bit.microservices.mitra.model.entity.QMsCity;
-import com.bit.microservices.mitra.model.entity.QMsCountry;
 import com.bit.microservices.mitra.model.response.city.CityListDTO;
-import com.bit.microservices.mitra.model.response.country.CountryListDTO;
-import com.bit.microservices.mitra.redis.FilterByBooleanExpression;
+import com.bit.microservices.mitra.utils.FilterByBooleanExpression;
 import com.bit.microservices.mitra.repository.QMsCityRepository;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;

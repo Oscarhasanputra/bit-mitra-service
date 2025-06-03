@@ -4,7 +4,7 @@ import com.bit.microservices.exception.ExceptionPrinter;
 import com.bit.microservices.mitra.command.bank.ActivateMsBankCommand;
 import com.bit.microservices.mitra.command.global.reactive.AbstractMitraCommand;
 import com.bit.microservices.mitra.exception.BadRequestException;
-import com.bit.microservices.mitra.exception.BaseException;
+import com.bit.microservices.mitra.exception.MetadataCollectibleException;
 import com.bit.microservices.mitra.model.constant.CrudCodeEnum;
 import com.bit.microservices.mitra.model.constant.ModuleCodeEnum;
 import com.bit.microservices.mitra.model.constant.ResponseCodeMessageEnum;
@@ -37,7 +37,7 @@ public class ActivateMsBankCommandImpl extends AbstractMitraCommand implements A
         for (ActivateRequestDTO request : requests) {
             try {
                 MsBank msBank = this.msBankRepository.findByIdAndIsDeleted(request.getId(),false)
-                        .orElseThrow(()->new BaseException(module,crud,ResponseCodeMessageEnum.FAILED_DATA_NOT_EXIST,""));
+                        .orElseThrow(()->new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_DATA_NOT_EXIST,""));
 
                 msBank.setIsActive(request.getActive());;
                 this.msBankRepository.merge(msBank);
@@ -52,7 +52,7 @@ public class ActivateMsBankCommandImpl extends AbstractMitraCommand implements A
                 responseList.add(baseResponseDTO);
 
             }
-            catch (BaseException err){
+            catch (MetadataCollectibleException err){
                 BaseResponseDTO errorResponse =  this.operationalFailed(request.getId(),err.getModuleCodeEnum(),err.getCrudCodeEnum(),err.getResponseCodeMessageEnum(),err.getMessage());
                 errorList.add(errorResponse);
             }

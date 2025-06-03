@@ -4,9 +4,8 @@ import com.bit.microservices.exception.ExceptionPrinter;
 import com.bit.microservices.mitra.command.city.UpdateProvinceCodeCityCommand;
 import com.bit.microservices.mitra.command.global.reactive.AbstractMitraCommand;
 import com.bit.microservices.mitra.exception.BadRequestException;
-import com.bit.microservices.mitra.exception.BaseException;
+import com.bit.microservices.mitra.exception.MetadataCollectibleException;
 import com.bit.microservices.mitra.mapper.MsCityMapper;
-import com.bit.microservices.mitra.model.annotation.RequestID;
 import com.bit.microservices.mitra.model.constant.CrudCodeEnum;
 import com.bit.microservices.mitra.model.constant.ModuleCodeEnum;
 import com.bit.microservices.mitra.model.constant.ResponseCodeMessageEnum;
@@ -47,17 +46,17 @@ public class UpdateProvinceCodeCityCommangImpl extends AbstractMitraCommand impl
         for (UpdateProvinceCodeRequestDTO request : requests) {
             try {
                 if(codeSavedList.contains(request.getCode())){
-                    throw new BaseException(module,crud,ResponseCodeMessageEnum.FAILED_CONCURRENCY_DETECTED,"");
+                    throw new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_CONCURRENCY_DETECTED,"");
                 }
 
                 codeSavedList.add(request.getId());
 
                 MsCity msCity = this.msCityRepository.findById(request.getId()).orElseThrow(()->{
-                    return new BaseException(module,crud, ResponseCodeMessageEnum.FAILED_DATA_NOT_EXIST,"");
+                    return new MetadataCollectibleException(module,crud, ResponseCodeMessageEnum.FAILED_DATA_NOT_EXIST,"");
                 });
 
                 if(!msCity.getCode().equals(request.getCode())){
-                    throw new BaseException(module,crud,ResponseCodeMessageEnum.FAILED_INCONSISTENT_CODE,"");
+                    throw new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_INCONSISTENT_CODE,"");
                 }
 
                 MsCity updateData = this.msCityMapper.updateMsCity(request,msCity);
@@ -76,7 +75,7 @@ public class UpdateProvinceCodeCityCommangImpl extends AbstractMitraCommand impl
                 responseList.add(baseResponseDTO);
 
             }
-            catch (BaseException err){
+            catch (MetadataCollectibleException err){
                 BaseResponseDTO errorResponse =  this.operationalFailed(request.getId(),err.getModuleCodeEnum(),err.getCrudCodeEnum(),err.getResponseCodeMessageEnum(),err.getMessage());
                 errorList.add(errorResponse);
             }

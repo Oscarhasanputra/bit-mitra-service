@@ -10,7 +10,9 @@ public enum ModuleCodeEnum {
     CITY("008002","city"),
     CURRENCY("008003","currency"),
 
-    BANK("008004","bank")
+    BANK("008004","bank"),
+
+    PORT("008005","port")
 
     ;
     private final String code;

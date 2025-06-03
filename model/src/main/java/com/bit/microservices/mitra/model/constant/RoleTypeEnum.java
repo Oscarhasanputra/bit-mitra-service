@@ -23,8 +23,6 @@ public enum RoleTypeEnum implements EnumAction {
 
     public static RoleTypeEnum getValue(String label) throws Exception{
         RoleTypeEnum status =  map.get(label);
-        System.out.println("get value");
-        System.out.println(map);
         if(Objects.isNull(status))
             throw new Exception("Enum Tidak Terdaftar");
         return status;

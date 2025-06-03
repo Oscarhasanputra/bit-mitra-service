@@ -248,11 +248,11 @@ public class RedisConfig {
     @ConditionalOnMissingBean
     CacheManager redissonCacheManager(RedissonClient redissonClient) throws Exception {
         Map<String, CacheConfig> config = new HashMap<>();
-        config.put("bit-user-l2", new CacheConfig(30000, 60000)); //2min TTL and 3min max idle time
+        config.put("bit-mitra-l2", new CacheConfig(30000, 60000)); //2min TTL and 3min max idle time
 
 		RedissonSpringCacheManager cacheManager = new RedissonSpringCacheManager(redissonClient);
         cacheManager.setTransactionAware(true);
-        cacheManager.setCacheNames(List.of("bit-user-l2"));
+        cacheManager.setCacheNames(List.of("bit-mitra-l2"));
         cacheManager.setConfig(config);
 
         cacheManager.afterPropertiesSet();

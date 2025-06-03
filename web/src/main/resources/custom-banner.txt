@@ -6,5 +6,5 @@
  888    888   888       888        888888    888    888 d88P"      888    888
  888   d88P   888       888                  888   d88P 888"       888   d88P
  8888888P"  8888888     888                  8888888P"  888888888  8888888P"
- Bhakti Idola Tama - B2B Microservice - BIT USER SERVICE
+ Bhakti Idola Tama - B2B Microservice - BIT MITRA SERVICE
 

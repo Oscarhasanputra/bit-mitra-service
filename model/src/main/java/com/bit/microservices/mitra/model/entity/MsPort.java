@@ -45,6 +45,10 @@ public class MsPort extends AuditField implements Serializable {
     @Column(name = "name",columnDefinition = "varchar(255)",nullable = false)
     private String name;
 
+    @Column(name = "address",columnDefinition = "varchar(255)",nullable = false)
+    private String address="";
+
+
     @Enumerated(EnumType.STRING)
     @Column(name = "type",columnDefinition = "varchar(255)",nullable = false)
     private PortTypeEnum type;

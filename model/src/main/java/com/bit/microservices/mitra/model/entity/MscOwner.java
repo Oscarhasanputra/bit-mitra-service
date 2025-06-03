@@ -36,6 +36,15 @@ public class MscOwner extends AuditField implements Serializable {
         }
     }
 
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "ms_account_id", referencedColumnName = "id", insertable = false, updatable = false)
+    })
+    private MsAccount msAccount;
+
+    @Column(name = "ms_account_id",columnDefinition = "varchar(255)",nullable = false)
+    private String msAccountId;
+
     @Column(name = "name",columnDefinition = "varchar(255)",nullable = false)
     private String name;
 

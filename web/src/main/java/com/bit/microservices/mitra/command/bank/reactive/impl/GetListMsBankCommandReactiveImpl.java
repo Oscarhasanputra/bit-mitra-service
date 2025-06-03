@@ -13,7 +13,7 @@ import com.bit.microservices.mitra.model.entity.QMsBank;
 import com.bit.microservices.mitra.model.request.MandatoryHeaderRequestDTO;
 import com.bit.microservices.mitra.model.request.SearchRequestDTO;
 import com.bit.microservices.mitra.model.response.bank.MsBankViewDTO;
-import com.bit.microservices.mitra.redis.FilterByBooleanExpression;
+import com.bit.microservices.mitra.utils.FilterByBooleanExpression;
 import com.bit.microservices.mitra.repository.QMsBankRepository;
 import com.bit.microservices.mitra.utils.PageableUtils;
 import com.querydsl.core.BooleanBuilder;

@@ -20,7 +20,7 @@ import java.util.UUID;
 @Audited
 @Entity
 @Table(name = "ms_bank")
-public class MsBank extends AuditField implements Serializable
+public class    MsBank extends AuditField implements Serializable
 {
 
     @Id

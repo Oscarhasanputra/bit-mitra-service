@@ -44,16 +44,17 @@ public class CityController{
 
     @PostMapping("/_sync-from-google")
     @Operation(summary = "", description = "", tags = {"City"})
-    public Mono<ResponseEntity<BaseGetResponseDTO>> syncCityFromOutsource(
+    public Mono<ResponseEntity<MainResponseDTO<List<BaseResponseDTO>>>>  syncCityFromOutsource(
             @RequestHeader(name = "X-FLOW-ID", required = false) String flowId,
             @RequestHeader(name = "X-VALIDATE-ONLY", required = false) String validateOnly,
             @RequestBody CountryIDRequestDTO requestDTO
             ) {
         MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO = new MandatoryHeaderRequestDTO(flowId,validateOnly);
         return commandExecutor.executeReactive(SyncCityCommandReactive.class, requestDTO, MODULE, CrudCodeEnum.SYNC_CODE,mandatoryHeaderRequestDTO)
-                .map(x -> {
+                .map(response -> {
                     log.info(flowId);
-                    return ResponseEntity.ok(x);
+
+                    return ResponseEntity.ok(new MainResponseDTO<>(ResponseStatusEnum.SUCCESS.responseMessage, ResponseStatusEnum.SUCCESS.code, response));
                 })
                 .doOnError(unused -> log.error(flowId))
                 .subscribeOn(Schedulers.boundedElastic());

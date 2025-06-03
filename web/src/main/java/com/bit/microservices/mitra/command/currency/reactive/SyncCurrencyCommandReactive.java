@@ -6,5 +6,5 @@ import com.bit.microservices.mitra.model.response.BaseResponseDTO;
 
 import java.util.List;
 
-public interface SyncCurrencyCommandReactive extends CommandReactive<BaseGetResponseDTO,Void> {
+public interface SyncCurrencyCommandReactive extends CommandReactive<List<BaseResponseDTO>,Void> {
 }

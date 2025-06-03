@@ -1,4 +1,4 @@
-package com.bit.microservices.mitra.redis;
+package com.bit.microservices.mitra.utils;
 
 import com.bit.microservices.mitra.model.constant.response_code.EnumColumnFilterBy;
 import com.bit.microservices.mitra.model.request.SearchRequestDTO;
