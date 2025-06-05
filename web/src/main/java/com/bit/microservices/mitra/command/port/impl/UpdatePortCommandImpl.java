@@ -11,7 +11,7 @@ import com.bit.microservices.mitra.model.constant.ModuleCodeEnum;
 import com.bit.microservices.mitra.model.constant.ResponseCodeMessageEnum;
 import com.bit.microservices.mitra.model.entity.MsPort;
 import com.bit.microservices.mitra.model.request.MandatoryHeaderRequestDTO;
-import com.bit.microservices.mitra.model.request.port.UpdatePortRequestDTO;
+import com.bit.microservices.mitra.model.request.port.PortUpdateRequestDTO;
 import com.bit.microservices.mitra.model.response.BaseResponseDTO;
 import com.bit.microservices.mitra.repository.MsPortRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -33,13 +34,14 @@ public class UpdatePortCommandImpl extends AbstractMitraCommand implements Updat
     private MsPortMapper msPortMapper;
 
     @Override
-    public List<BaseResponseDTO> execute(List<UpdatePortRequestDTO> requests, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
+    @Transactional
+    public List<BaseResponseDTO> execute(List<PortUpdateRequestDTO> requests, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
         List<BaseResponseDTO> errorList = new ArrayList<>();
         List<BaseResponseDTO> responseList = new ArrayList<>();
         Set<String> codeSavedlist = new HashSet<>();
 
 
-        for (UpdatePortRequestDTO request : requests) {
+        for (PortUpdateRequestDTO request : requests) {
             try {
 
                 if(codeSavedlist.contains(request.getId())){
@@ -55,7 +57,7 @@ public class UpdatePortCommandImpl extends AbstractMitraCommand implements Updat
                     throw new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_INCONSISTENT_CODE,"");
                 }
 
-                if(!msPort.getIsActive()){
+                if(!msPort.getIsActive().equals(request.getActive())){
                     throw new MetadataCollectibleException(module,crud, ResponseCodeMessageEnum.FAILED_CANNOT_ACTIVATE,"");
                 }
 

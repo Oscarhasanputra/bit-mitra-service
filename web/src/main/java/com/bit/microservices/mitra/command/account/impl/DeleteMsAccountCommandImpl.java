@@ -1,68 +1,75 @@
-package com.bit.microservices.mitra.command.city.impl;
+package com.bit.microservices.mitra.command.account.impl;
 
 import com.bit.microservices.exception.ExceptionPrinter;
-import com.bit.microservices.mitra.command.city.UpdateProvinceCodeCityCommand;
+import com.bit.microservices.mitra.command.account.DeleteMsAccountCommand;
 import com.bit.microservices.mitra.command.global.reactive.AbstractMitraCommand;
 import com.bit.microservices.mitra.exception.BadRequestException;
 import com.bit.microservices.mitra.exception.MetadataCollectibleException;
-import com.bit.microservices.mitra.mapper.MsCityMapper;
 import com.bit.microservices.mitra.model.constant.CrudCodeEnum;
 import com.bit.microservices.mitra.model.constant.ModuleCodeEnum;
 import com.bit.microservices.mitra.model.constant.ResponseCodeMessageEnum;
-import com.bit.microservices.mitra.model.entity.MsCity;
+import com.bit.microservices.mitra.model.entity.MsAccount;
+import com.bit.microservices.mitra.model.entity.QMscOwner;
+import com.bit.microservices.mitra.model.request.DeleteRequestDTO;
+import com.bit.microservices.mitra.model.request.IDRequestDTO;
 import com.bit.microservices.mitra.model.request.MandatoryHeaderRequestDTO;
-import com.bit.microservices.mitra.model.request.city.UpdateProvinceCodeRequestDTO;
+import com.bit.microservices.mitra.model.request.account.MsAccountUpdateRequestDTO;
+import com.bit.microservices.mitra.model.request.mscowner.MscOwnerCreateRequestDTO;
+import com.bit.microservices.mitra.model.request.mscowner.MscOwnerUpdateRequestDTO;
 import com.bit.microservices.mitra.model.response.BaseResponseDTO;
-import com.bit.microservices.mitra.repository.MsCityRepository;
+import com.bit.microservices.mitra.repository.MsAccountRepository;
+import com.bit.microservices.model.ResponseResultDetailDTO;
+import com.bit.microservices.model.ResultStatus;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.sql.SQLException;
 import java.util.*;
 
 @Component
 @Slf4j
-public class UpdateProvinceCodeCityCommangImpl extends AbstractMitraCommand implements UpdateProvinceCodeCityCommand {
+public class DeleteMsAccountCommandImpl extends AbstractMitraCommand implements DeleteMsAccountCommand {
 
     @Autowired
-    private MsCityRepository msCityRepository;
+    private MsAccountRepository msAccountRepository;
 
     @Autowired
-    private MsCityMapper msCityMapper;
+    private PlatformTransactionManager platformTransactionManager;
 
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     @Transactional
-    public List<BaseResponseDTO> execute(List<UpdateProvinceCodeRequestDTO> requests, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
-
+    public List<BaseResponseDTO> execute(List<DeleteRequestDTO> requests, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
         List<BaseResponseDTO> errorList = new ArrayList<>();
         List<BaseResponseDTO> responseList = new ArrayList<>();
-        Set<String> codeSavedList= new HashSet<>();
-
-        for (UpdateProvinceCodeRequestDTO request : requests) {
+        Set<String> codeSavedlist = new HashSet<>();
+        for (DeleteRequestDTO request : requests) {
             try {
-                if(codeSavedList.contains(request.getCode())){
-                    throw new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_CONCURRENCY_DETECTED,"");
+                if(codeSavedlist.contains(request.getId())){
+                    throw new MetadataCollectibleException(module,crud, ResponseCodeMessageEnum.FAILED_CONCURRENCY_DETECTED,"");
                 }
+                codeSavedlist.add(request.getId());
 
-                codeSavedList.add(request.getId());
+                MsAccount msAccount = this.msAccountRepository.findByIdAndIsDeleted(request.getId(),false).orElseThrow(()->new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_DATA_NOT_EXIST,""));
 
-                MsCity msCity = this.msCityRepository.findById(request.getId()).orElseThrow(()->{
-                    return new MetadataCollectibleException(module,crud, ResponseCodeMessageEnum.FAILED_DATA_NOT_EXIST,"");
-                });
+                msAccount.setIsDeleted(true);
 
-                if(!msCity.getCode().equals(request.getCode())){
-                    throw new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_INCONSISTENT_CODE,"");
-                }
+                this.msAccountRepository.merge(msAccount);
+                this.deleteMscOwner(msAccount.getId());
 
-                MsCity updateData = this.msCityMapper.updateMsCity(request,msCity);
-
-
-                this.msCityRepository.merge(updateData);
 
 
                 BaseResponseDTO baseResponseDTO = this.operationalSuccess(
@@ -73,11 +80,14 @@ public class UpdateProvinceCodeCityCommangImpl extends AbstractMitraCommand impl
                         ResponseCodeMessageEnum.SUCCESS.getMessage()
                 );
                 responseList.add(baseResponseDTO);
-
             }
             catch (MetadataCollectibleException err){
-                BaseResponseDTO errorResponse =  this.operationalFailed(request.getId(),err.getModuleCodeEnum(),err.getCrudCodeEnum(),err.getResponseCodeMessageEnum(),err.getMessage());
-                errorList.add(errorResponse);
+                if(!Objects.isNull(err.getBaseResponseDTO())){
+                    errorList.add(err.getBaseResponseDTO());
+                }else{
+                    BaseResponseDTO errorResponse =  this.operationalFailed(request.getId(),err.getModuleCodeEnum(),err.getCrudCodeEnum(),err.getResponseCodeMessageEnum(),err.getMessage());
+                    errorList.add(errorResponse);
+                }
             }
             catch (JpaSystemException | DataIntegrityViolationException e){
                 ExceptionPrinter printer = new ExceptionPrinter(e);
@@ -122,11 +132,28 @@ public class UpdateProvinceCodeCityCommangImpl extends AbstractMitraCommand impl
                 BaseResponseDTO errorResponse =  this.operationalFailed(request.getId(),module,crud,responseType,message);
                 errorList.add(errorResponse);
             }
+
         }
+
         if(!errorList.isEmpty()){
             throw new BadRequestException(errorList);
         }
-
         return responseList;
+    }
+
+    @Transactional
+    private void deleteMscOwner(String msAccountId){
+        TransactionTemplate tx = new TransactionTemplate(platformTransactionManager);
+        tx.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+
+        long code = tx.execute(status -> {
+            JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+            QMscOwner qMscOwner = QMscOwner.mscOwner;
+
+            BooleanExpression predicate = qMscOwner.msAccountId.eq(msAccountId);
+            return queryFactory.delete(qMscOwner).where(predicate).execute();
+        });
+
+        entityManager.clear();
     }
 }

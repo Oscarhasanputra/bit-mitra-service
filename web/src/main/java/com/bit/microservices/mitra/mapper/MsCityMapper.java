@@ -13,6 +13,9 @@ public interface MsCityMapper extends BaseMapper {
 
     MsCityMapper INSTANCE = Mappers.getMapper(MsCityMapper.class);
 
+    @Mappings({
+            @Mapping(target="id",ignore = true)
+    })
     MsCity toEntity(CityAPIResponseDTO cityAPIResponseDTO);
 
 

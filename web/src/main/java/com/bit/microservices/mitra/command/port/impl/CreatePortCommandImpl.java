@@ -11,7 +11,7 @@ import com.bit.microservices.mitra.model.constant.ModuleCodeEnum;
 import com.bit.microservices.mitra.model.constant.ResponseCodeMessageEnum;
 import com.bit.microservices.mitra.model.entity.MsPort;
 import com.bit.microservices.mitra.model.request.MandatoryHeaderRequestDTO;
-import com.bit.microservices.mitra.model.request.port.CreatePortRequestDTO;
+import com.bit.microservices.mitra.model.request.port.PortCreateRequestDTO;
 import com.bit.microservices.mitra.model.response.BaseResponseDTO;
 import com.bit.microservices.mitra.repository.MsPortRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -34,12 +35,13 @@ public class CreatePortCommandImpl extends AbstractMitraCommand implements Creat
     private MsPortMapper msPortMapper;
 
     @Override
-    public List<BaseResponseDTO> execute(List<CreatePortRequestDTO> requests, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
+    @Transactional
+    public List<BaseResponseDTO> execute(List<PortCreateRequestDTO> requests, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
         List<BaseResponseDTO> errorList = new ArrayList<>();
         List<BaseResponseDTO> responseList = new ArrayList<>();
         Set<String> codeSavedlist = new HashSet<>();
 
-        for (CreatePortRequestDTO request : requests) {
+        for (PortCreateRequestDTO request : requests) {
             try {
                 if(codeSavedlist.contains(request.getCode())){
                     throw new MetadataCollectibleException(module,crud, ResponseCodeMessageEnum.FAILED_CONCURRENCY_DETECTED,"");
@@ -49,10 +51,11 @@ public class CreatePortCommandImpl extends AbstractMitraCommand implements Creat
 
                 MsPort msPort = this.msPortRepository.findByCodeAndIsDeleted(request.getCode(),false).orElse(null);
                 if(!Objects.isNull(msPort)){
-                    throw new MetadataCollectibleException(module,crud, ResponseCodeMessageEnum.FAILED_DATA_NOT_EXIST,"");
+                    throw new MetadataCollectibleException(module,crud, ResponseCodeMessageEnum.FAILED_DATA_ALREADY_EXIST,"");
                 }
 
                 MsPort dataSaved = this.msPortMapper.toEntity(request);
+                dataSaved = this.msPortRepository.persist(dataSaved);
                 BaseResponseDTO baseResponseDTO = this.operationalSuccess(
                         dataSaved.getId(),
                         module,

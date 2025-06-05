@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,10 +43,9 @@ public class CreateCurrencyCommandImpl extends AbstractMitraCommand implements C
 
     @Override
     @Transactional
-    public List<BaseResponseDTO> execute(List<CurrencyAPIDTO> currencies, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
+    public BaseGetResponseDTO execute(List<CurrencyAPIDTO> currencies, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
 
-        List<BaseResponseDTO> responseList = new ArrayList<>();
-        List<BaseResponseDTO> errorList = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
         for (CurrencyAPIDTO currency : currencies) {
             try {
                 MsCurrency msCurrencyExists = this.msCurrencyRepository.findByCode(currency.getCode()).orElse(null);
@@ -53,24 +53,11 @@ public class CreateCurrencyCommandImpl extends AbstractMitraCommand implements C
                 if(Objects.isNull(msCurrencyExists)){
 
                     MsCurrency msCurrencySaved= this.msCurrencyMapper.toEntity(currency);
+                    msCurrencySaved.setSyncDate(now);
                     msCurrencySaved =  this.msCurrencyRepository.persist(msCurrencySaved);
 
-
-                    BaseResponseDTO baseResponseDTO = this.operationalSuccess(
-                            msCurrencySaved.getId(),
-                            module,
-                            crud,
-                            ResponseCodeMessageEnum.SUCCESS,
-                            ResponseCodeMessageEnum.SUCCESS.getMessage()
-                    );
-
-                    responseList.add(baseResponseDTO);
                 }
 
-            }
-            catch (MetadataCollectibleException err){
-                BaseResponseDTO errorResponse =  this.operationalFailed(currency.getCode(),err.getModuleCodeEnum(),err.getCrudCodeEnum(),err.getResponseCodeMessageEnum(),err.getMessage());
-                errorList.add(errorResponse);
             }
             catch (JpaSystemException | DataIntegrityViolationException e){
                 ExceptionPrinter printer = new ExceptionPrinter(e);
@@ -84,24 +71,20 @@ public class CreateCurrencyCommandImpl extends AbstractMitraCommand implements C
                         //duplicate data
                         ResponseCodeMessageEnum responseType = ResponseCodeMessageEnum.FAILED_DATA_ALREADY_EXIST;
                         String message = exception.getMessage();
-                        BaseResponseDTO errorResponse =  this.operationalFailed(currency.getCode(),module,crud,responseType,message);
-                        errorList.add(errorResponse);
+                        throw new BadRequestException(module,crud,responseType,message);
 
                     }else{
                         ResponseCodeMessageEnum responseType = ResponseCodeMessageEnum.FAILED_CUSTOM;
 
                         String message = exception.getMessage();
-
-                        BaseResponseDTO errorResponse =  this.operationalFailed(currency.getCode(),module,crud,responseType,message);
-                        errorList.add(errorResponse);
+                        throw new BadRequestException(module,crud,responseType,message);
 
 
                     }
                 }else{
                     ResponseCodeMessageEnum responseType = ResponseCodeMessageEnum.FAILED_CUSTOM;
                     String message = e.getCause().getMessage();
-                    BaseResponseDTO errorResponse =  this.operationalFailed(currency.getCode(),module,crud,responseType,message);
-                    errorList.add(errorResponse);
+                    throw new BadRequestException(module,crud,responseType,message);
                 }
 
 
@@ -112,17 +95,18 @@ public class CreateCurrencyCommandImpl extends AbstractMitraCommand implements C
                 log.info("Error : {}",printer.getMessage());
                 ResponseCodeMessageEnum responseType = ResponseCodeMessageEnum.FAILED_CUSTOM;
                 String message = err.getMessage();
-                BaseResponseDTO errorResponse =  this.operationalFailed(currency.getCode(),module,crud,responseType,message);
-                errorList.add(errorResponse);
+                throw new BadRequestException(module,crud,responseType,message);
             }
 
         }
 
-        if(!errorList.isEmpty()){
-            throw new BadRequestException(errorList);
+        ResponseCodeMessageEnum responseCodeMessageEnum = ResponseCodeMessageEnum.SUCCESS;
 
-        }
-        return responseList;
+        String responseCode = responseCodeMessageEnum.getHttpStatus()+module.getCode()+crud.getCode()+responseCodeMessageEnum.getCode();
+
+        BaseGetResponseDTO responseDTO =  new BaseGetResponseDTO<>(ResponseStatusEnum.SUCCESS.responseMessage, ResponseStatusEnum.SUCCESS.code,new BigDecimal(responseCode),responseCodeMessageEnum.getMessage(),new HashMap<>());
+
+        return responseDTO;
 
     }
 }

@@ -13,7 +13,8 @@ public enum CrudCodeEnum {
     GET_CODE("04", "get", ApiGroupType.NON_ATOMIC),
     GETLIST_CODE("05", "get-list", ApiGroupType.NON_ATOMIC_PAGE),
     ACTIVATE_CODE("06", "activate", ApiGroupType.ATOMIC),
-    SYNC_CODE("20","_sync-from-google",ApiGroupType.NON_ATOMIC_PAGE);
+    SYNC_CODE("14","_sync-from-google",ApiGroupType.NON_ATOMIC_PAGE),
+    UPDATE_PROVINCE_CODE("20","_update_province_code",ApiGroupType.ATOMIC);
 
     private final String code;
     private final String path;

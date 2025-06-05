@@ -6,10 +6,8 @@ import com.bit.microservices.mitra.model.constant.CrudCodeEnum;
 import com.bit.microservices.mitra.model.constant.ModuleCodeEnum;
 import com.bit.microservices.mitra.model.constant.ResponseCodeMessageEnum;
 import com.bit.microservices.mitra.model.constant.ResponseStatusEnum;
-import com.bit.microservices.mitra.model.request.GetSingleRequestDTO;
+import com.bit.microservices.mitra.model.request.IDRequestDTO;
 import com.bit.microservices.mitra.model.request.MandatoryHeaderRequestDTO;
-import com.bit.microservices.mitra.model.response.BaseGetResponseDTO;
-import com.bit.microservices.mitra.model.response.MainResponseDTO;
 import com.bit.microservices.mitra.model.response.bank.MsBankViewDTO;
 import com.bit.microservices.mitra.model.response.view.ViewMainResponseDTO;
 import com.bit.microservices.mitra.redis.MsBankRedisRepository;
@@ -35,7 +33,7 @@ public class GetMsBankCommandReactiveImpl implements GetMsBankCommandReactive {
 
 
     @Override
-    public Mono<ViewMainResponseDTO<MsBankViewDTO>> execute(GetSingleRequestDTO request, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
+    public Mono<ViewMainResponseDTO<MsBankViewDTO>> execute(IDRequestDTO request, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
         return Mono.fromCallable(()->{
             MsBankViewDTO msBankViewDTO = this.msBankRedisRepository.load(request.getId());
             if(Objects.isNull(msBankViewDTO)){

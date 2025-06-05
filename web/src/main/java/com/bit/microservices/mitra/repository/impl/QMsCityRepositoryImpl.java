@@ -1,6 +1,6 @@
 package com.bit.microservices.mitra.repository.impl;
 
-import com.bit.microservices.mitra.model.constant.country.CountrySearchField;
+import com.bit.microservices.mitra.model.constant.city.CitySearchField;
 import com.bit.microservices.mitra.model.entity.QMsCity;
 import com.bit.microservices.mitra.model.response.city.CityListDTO;
 import com.bit.microservices.mitra.utils.FilterByBooleanExpression;
@@ -38,11 +38,11 @@ public class QMsCityRepositoryImpl implements QMsCityRepository {
                         qMsCity.code,
                         qMsCity.name,
                         qMsCity.provinceCode,
-                        qMsCity.provinceName,
                         qMsCity.isActive,
                         qMsCity.remarks,
                         qMsCity.isDeleted,
                         qMsCity.deletedReason,
+                        qMsCity.syncDate,
                         qMsCity.createdDate,
                         qMsCity.createdBy,
                         qMsCity.modifiedDate,
@@ -66,7 +66,7 @@ public class QMsCityRepositoryImpl implements QMsCityRepository {
                     .fetch();
         } else {
             // Sort
-            List<OrderSpecifier<?>> orderSpecifiers = FilterByBooleanExpression.getOrderSpecifiers(pageable.getSort(),qMsCity, CountrySearchField.class);
+            List<OrderSpecifier<?>> orderSpecifiers = FilterByBooleanExpression.getOrderSpecifiers(pageable.getSort(),qMsCity, CitySearchField.class);
 
             result = queryResult
                     .offset(offset)

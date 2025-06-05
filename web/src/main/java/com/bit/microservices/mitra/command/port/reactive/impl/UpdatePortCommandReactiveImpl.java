@@ -1,19 +1,15 @@
 package com.bit.microservices.mitra.command.port.reactive.impl;
 
-import com.bit.microservices.mitra.command.bank.UpdateMsBankCommand;
 import com.bit.microservices.mitra.command.executor.CommandExecutor;
 import com.bit.microservices.mitra.command.port.UpdatePortCommand;
 import com.bit.microservices.mitra.command.port.reactive.UpdatePortCommandReactive;
 import com.bit.microservices.mitra.filter.ReactiveSecurityContextHolderData;
 import com.bit.microservices.mitra.model.constant.CrudCodeEnum;
 import com.bit.microservices.mitra.model.constant.ModuleCodeEnum;
-import com.bit.microservices.mitra.model.entity.MsPort;
 import com.bit.microservices.mitra.model.request.MandatoryHeaderRequestDTO;
-import com.bit.microservices.mitra.model.request.port.UpdatePortRequestDTO;
+import com.bit.microservices.mitra.model.request.port.PortUpdateRequestDTO;
 import com.bit.microservices.mitra.model.response.BaseResponseDTO;
-import com.bit.microservices.mitra.model.response.bank.MsBankViewDTO;
 import com.bit.microservices.mitra.model.response.port.MsPortViewDTO;
-import com.bit.microservices.mitra.redis.MsBankRedisRepository;
 import com.bit.microservices.mitra.redis.MsPortRedisRepository;
 import com.bit.microservices.mitra.repository.MsPortRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +35,7 @@ public class UpdatePortCommandReactiveImpl implements UpdatePortCommandReactive 
     @Autowired
     private MsPortRedisRepository msPortRedisRepository;
     @Override
-    public Mono<List<BaseResponseDTO>> execute(List<UpdatePortRequestDTO> requests, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
+    public Mono<List<BaseResponseDTO>> execute(List<PortUpdateRequestDTO> requests, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
         return Mono.just(requests)
                 .flatMap((requestDto)-> ReactiveSecurityContextHolderData.assignContextData(this.commandExecutor.executeAsReactive(UpdatePortCommand.class,requestDto, module, crud,mandatoryHeaderRequestDTO)))
                 .flatMap((responseList)->{

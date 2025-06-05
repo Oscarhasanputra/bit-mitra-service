@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Data
-public class UpdatePortRequestDTO extends CreatePortRequestDTO implements Serializable, FilterUnknownFields, BaseResponseGetter<BaseResponseDTO> {
+public class PortUpdateRequestDTO extends PortCreateRequestDTO implements Serializable, FilterUnknownFields, BaseResponseGetter<BaseResponseDTO> {
 
 
     @Serial

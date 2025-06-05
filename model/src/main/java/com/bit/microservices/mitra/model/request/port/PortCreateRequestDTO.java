@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Data
-public class CreatePortRequestDTO implements Serializable, FilterUnknownFields, BaseResponseGetter<BaseResponseDTO> {
+public class PortCreateRequestDTO implements Serializable, FilterUnknownFields, BaseResponseGetter<BaseResponseDTO> {
     @Serial
     private static final long serialVersionUID = 7895123197025136746L;
 
@@ -37,18 +37,26 @@ public class CreatePortRequestDTO implements Serializable, FilterUnknownFields, 
     @JsonDeserialize(using = UppercaseDeserializer.class)
     private String type;
 
-    @ValidationRequestField(fieldType = FieldType.STRING, notNull = true, notEmpty = true, notBlank = true)
-    @JsonDeserialize(using = UppercaseDeserializer.class)
-    private String city;
 
-    @ValidationRequestField(fieldType = FieldType.STRING, notNull = true, notEmpty = true, notBlank = true)
-    @JsonDeserialize(using = UppercaseDeserializer.class)
-    private String country;
 
-    @ValidationRequestField(fieldType = FieldType.STRING, notNull = true)
+    @ValidationRequestField(fieldType = FieldType.STRING, notNull = true, notEmpty = true, notBlank = true,mustContainTilde = true)
+    private String countryId;
+
+    @ValidationRequestField(fieldType = FieldType.STRING, notNull = true, notEmpty = true, notBlank = true,notEqualALLString = true)
+    @JsonDeserialize(using = UppercaseDeserializer.class)
+    private String countryCode;
+
+    @ValidationRequestField(fieldType = FieldType.STRING, notNull = true, notEmpty = true, notBlank = true,mustContainTilde = true)
+    private String cityId;
+
+    @ValidationRequestField(fieldType = FieldType.STRING, notNull = true, notEmpty = true, notBlank = true,notEqualALLString = true)
+    @JsonDeserialize(using = UppercaseDeserializer.class)
+    private String cityCode;
+
+    @ValidationRequestField(fieldType = FieldType.STRING,notNull = true)
     private String pic;
 
-    @ValidationRequestField(fieldType = FieldType.STRING, notNull = true,mustValidMobile = true)
+    @ValidationRequestField(fieldType = FieldType.STRING,notEmpty = true,notBlank = true, notNull = true,mustValidMobile = true)
     private String phoneNumber;
 
 

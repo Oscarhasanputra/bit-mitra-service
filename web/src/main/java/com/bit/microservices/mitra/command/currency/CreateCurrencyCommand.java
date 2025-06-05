@@ -7,5 +7,5 @@ import com.bit.microservices.mitra.model.response.BaseResponseDTO;
 
 import java.util.List;
 
-public interface CreateCurrencyCommand extends Command<List<BaseResponseDTO>,List<CurrencyAPIDTO>>{
+public interface CreateCurrencyCommand extends Command<BaseGetResponseDTO,List<CurrencyAPIDTO>>{
 }

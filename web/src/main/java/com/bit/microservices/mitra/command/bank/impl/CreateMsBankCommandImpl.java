@@ -51,7 +51,8 @@ public class CreateMsBankCommandImpl extends AbstractMitraCommand implements Cre
                 codeSavedlist.add(request.getCode());
 
                 QMsBank qMsBank = QMsBank.msBank;
-                BooleanExpression predicate = qMsBank.isDeleted.eq(false).and(qMsBank.biCode.eq(request.getBiCode()).or(qMsBank.swiftCode.eq(request.getCode()).or(qMsBank.code.eq(request.getCode()))));
+                BooleanExpression predicate = qMsBank.isDeleted.eq(false)
+                        .and(qMsBank.biCode.eq(request.getBiCode()).or(qMsBank.swiftCode.eq(request.getSwiftCode()).or(qMsBank.code.eq(request.getCode()))));
 
                 Iterator<MsBank> msBank = this.msBankRepository.findAll(predicate).iterator();
 
@@ -64,15 +65,15 @@ public class CreateMsBankCommandImpl extends AbstractMitraCommand implements Cre
                 }
 
                 if(!Objects.isNull(msbankMap.get(request.getCode()))){
-                    throw new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_DETAIL_ALREADY_EXIST,"Code");
+                    throw new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_DATA_ALREADY_EXIST,"Code");
                 }
                 else if(!Objects.isNull(msbankMap.get(request.getSwiftCode()))){
 
-                    throw new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_DETAIL_ALREADY_EXIST,"Swift Code");
+                    throw new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_CUSTOM,"Swift Code Already Exists In Other Code");
                 }
                 else if(!Objects.isNull(msbankMap.get(request.getBiCode()))){
 
-                    throw new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_DETAIL_ALREADY_EXIST,"BI Code");
+                    throw new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_CUSTOM,"BI Code Already Exists In Other Code");
                 }
 
                 MsBank dataCreated = this.msBankMapper.toEntity(request);

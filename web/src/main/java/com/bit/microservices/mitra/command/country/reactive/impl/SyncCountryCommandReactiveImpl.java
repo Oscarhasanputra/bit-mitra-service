@@ -41,7 +41,7 @@ public class SyncCountryCommandReactiveImpl implements SyncCountryCommandReactiv
     private CommandExecutor commandExecutor;
 
     @Override
-    public Mono<List<BaseResponseDTO>> execute(Void request, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
+    public Mono<BaseGetResponseDTO> execute(Void request, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
 
         return this.httpService.getListCountry().flatMap(
                 countryList ->{
@@ -53,7 +53,7 @@ public class SyncCountryCommandReactiveImpl implements SyncCountryCommandReactiv
             if(exception instanceof BadRequestException){
                 return Mono.error(exception);
             }else{
-                return Mono.error(new BadRequestException(module,crud,ResponseCodeMessageEnum.FAILED_CUSTOM,exception.getMessage()));
+                return Mono.error(new BadRequestException(module,crud,ResponseCodeMessageEnum.FAILED_CONNECTION_TIMEOUT,""));
             }
         })
                 ;

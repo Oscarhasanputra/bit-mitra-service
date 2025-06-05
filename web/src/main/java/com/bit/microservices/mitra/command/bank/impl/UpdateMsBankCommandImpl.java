@@ -52,7 +52,7 @@ public class UpdateMsBankCommandImpl extends AbstractMitraCommand implements Upd
                     return new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_DATA_NOT_EXIST,"");
                 });
 
-                if(!msBank.getIsActive()){
+                if(!msBank.getIsActive().equals(request.getActive())){
                     throw new MetadataCollectibleException(module,crud,ResponseCodeMessageEnum.FAILED_CANNOT_ACTIVATE,"");
                 }
 

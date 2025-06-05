@@ -44,6 +44,7 @@ public class QMsCountryRepositoryImpl implements QMsCountryRepository {
                         qMsCountry.remarks,
                         qMsCountry.isDeleted,
                         qMsCountry.deletedReason,
+                        qMsCountry.syncDate,
                         qMsCountry.createdBy,
                         qMsCountry.createdDate,
                         qMsCountry.modifiedBy,

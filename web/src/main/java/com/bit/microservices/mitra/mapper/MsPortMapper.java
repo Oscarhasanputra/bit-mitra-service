@@ -1,12 +1,8 @@
 package com.bit.microservices.mitra.mapper;
 
-import com.bit.microservices.mitra.model.dto.currency.CurrencyAPIDTO;
-import com.bit.microservices.mitra.model.entity.MsCity;
-import com.bit.microservices.mitra.model.entity.MsCurrency;
 import com.bit.microservices.mitra.model.entity.MsPort;
-import com.bit.microservices.mitra.model.request.city.UpdateProvinceCodeRequestDTO;
-import com.bit.microservices.mitra.model.request.port.CreatePortRequestDTO;
-import com.bit.microservices.mitra.model.request.port.UpdatePortRequestDTO;
+import com.bit.microservices.mitra.model.request.port.PortCreateRequestDTO;
+import com.bit.microservices.mitra.model.request.port.PortUpdateRequestDTO;
 import com.bit.microservices.model.BaseMapper;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
@@ -18,12 +14,12 @@ public interface MsPortMapper extends BaseMapper {
     @Mappings({
             @Mapping(source = "active",target = "isActive")
     })
-    MsPort toEntity(CreatePortRequestDTO requestDTO);
+    MsPort toEntity(PortCreateRequestDTO requestDTO);
 
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mappings({
             @Mapping(source = "active",target="isActive")
     })
-    MsPort updateMsPort(UpdatePortRequestDTO request, @MappingTarget MsPort msModule);
+    MsPort updateMsPort(PortUpdateRequestDTO request, @MappingTarget MsPort msModule);
 }

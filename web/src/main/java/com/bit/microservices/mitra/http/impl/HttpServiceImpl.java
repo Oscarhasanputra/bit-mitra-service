@@ -29,8 +29,11 @@ public class HttpServiceImpl implements HttpService {
     private WebClient.Builder webClient;
     @Override
     public Mono<List<CountryAPIResponseDTO>> getListCountry() {
+
+        System.out.println("running get list country 1");
         URI url = URI.create("https://restcountries.com/v3.1/all");
 
+        System.out.println("running get list country");
         Map<String, String> headerList = new HashMap<>();
         headerList.put("Accept", MediaType.ALL_VALUE);
         headerList.put("Content-Type", MediaType.APPLICATION_JSON_VALUE);
@@ -43,6 +46,7 @@ public class HttpServiceImpl implements HttpService {
                 .bodyToMono(new ParameterizedTypeReference<List<CountryAPIResponseDTO>>() {
                 })
                 .doOnError(err -> {
+                    System.out.println("running get list country error");
 
                     try{
                         WebClientResponseException exp = (WebClientResponseException) err;

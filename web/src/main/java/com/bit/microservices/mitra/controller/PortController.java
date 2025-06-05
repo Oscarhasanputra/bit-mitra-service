@@ -1,10 +1,7 @@
 package com.bit.microservices.mitra.controller;
 
-import com.bit.microservices.mitra.command.bank.CreateMsBankCommand;
 import com.bit.microservices.mitra.command.executor.CommandExecutor;
 import com.bit.microservices.mitra.command.port.CreatePortCommand;
-import com.bit.microservices.mitra.command.port.DeletePortCommand;
-import com.bit.microservices.mitra.command.port.UpdatePortCommand;
 import com.bit.microservices.mitra.command.port.reactive.*;
 import com.bit.microservices.mitra.filter.ReactiveSecurityContextHolderData;
 import com.bit.microservices.mitra.model.CustomPageImpl;
@@ -13,9 +10,8 @@ import com.bit.microservices.mitra.model.constant.ModuleCodeEnum;
 import com.bit.microservices.mitra.model.constant.ResponseCodeMessageEnum;
 import com.bit.microservices.mitra.model.constant.ResponseStatusEnum;
 import com.bit.microservices.mitra.model.request.*;
-import com.bit.microservices.mitra.model.request.bank.MsBankCreateRequestDTO;
-import com.bit.microservices.mitra.model.request.port.CreatePortRequestDTO;
-import com.bit.microservices.mitra.model.request.port.UpdatePortRequestDTO;
+import com.bit.microservices.mitra.model.request.port.PortCreateRequestDTO;
+import com.bit.microservices.mitra.model.request.port.PortUpdateRequestDTO;
 import com.bit.microservices.mitra.model.response.BaseGetResponseDTO;
 import com.bit.microservices.mitra.model.response.BaseResponseDTO;
 import com.bit.microservices.mitra.model.response.MainResponseDTO;
@@ -48,7 +44,7 @@ public class PortController {
     public Mono<ResponseEntity<MainResponseDTO<List<BaseResponseDTO>>>> createPort(
             @RequestHeader(name = "X-FLOW-ID", required = false) String flowId,
             @RequestHeader(name = "X-VALIDATE-ONLY", required = false) String validateOnly,
-            @RequestBody List<CreatePortRequestDTO> requestDTO
+            @RequestBody List<PortCreateRequestDTO> requestDTO
     ) {
         MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO = new MandatoryHeaderRequestDTO(flowId,validateOnly);
         return ReactiveSecurityContextHolderData.assignContextData(
@@ -67,7 +63,7 @@ public class PortController {
     public Mono<ResponseEntity<MainResponseDTO<List<BaseResponseDTO>>>> updatePort(
             @RequestHeader(name = "X-FLOW-ID", required = false) String flowId,
             @RequestHeader(name = "X-VALIDATE-ONLY", required = false) String validateOnly,
-            @RequestBody List<UpdatePortRequestDTO> requestDTO
+            @RequestBody List<PortUpdateRequestDTO> requestDTO
     ) {
         MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO = new MandatoryHeaderRequestDTO(flowId,validateOnly);
         return ReactiveSecurityContextHolderData.assignContextData(
@@ -90,7 +86,7 @@ public class PortController {
     ) {
         MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO = new MandatoryHeaderRequestDTO(flowId,validateOnly);
         return ReactiveSecurityContextHolderData.assignContextData(
-                        commandExecutor.executeReactive(DeletePortCommandReactive.class, requestDTO, MODULE, CrudCodeEnum.UPDATE_CODE,mandatoryHeaderRequestDTO)
+                        commandExecutor.executeReactive(DeletePortCommandReactive.class, requestDTO, MODULE, CrudCodeEnum.DELETE_CODE,mandatoryHeaderRequestDTO)
                                 .map(response -> {
 
                                     return ResponseEntity.ok(new MainResponseDTO<>(ResponseStatusEnum.SUCCESS.responseMessage, ResponseStatusEnum.SUCCESS.code, response));
@@ -109,7 +105,7 @@ public class PortController {
     ) {
         MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO = new MandatoryHeaderRequestDTO(flowId,validateOnly);
         return ReactiveSecurityContextHolderData.assignContextData(
-                        commandExecutor.executeReactive(ActivatePortCommandReactive.class, requestDTO, MODULE, CrudCodeEnum.UPDATE_CODE,mandatoryHeaderRequestDTO)
+                        commandExecutor.executeReactive(ActivatePortCommandReactive.class, requestDTO, MODULE, CrudCodeEnum.ACTIVATE_CODE,mandatoryHeaderRequestDTO)
                                 .map(response -> {
                                     return ResponseEntity.ok(new MainResponseDTO<>(ResponseStatusEnum.SUCCESS.responseMessage, ResponseStatusEnum.SUCCESS.code, response));
                                 })
@@ -119,11 +115,11 @@ public class PortController {
     }
 
     @Operation(summary = "Get Single Role", description = "Get Single Data of Role", tags = { "Role" } )
-    @PostMapping("/v1/0/get")
+    @PostMapping("/get")
     public Mono<ResponseEntity<ViewMainResponseDTO<MsPortViewDTO>>> getMsPort(
             @RequestHeader(name = "X-FLOW-ID", required = false) String flowId,
             @RequestHeader(name = "X-VALIDATE-ONLY", required = false) String validateOnly,
-            @Valid @RequestBody GetSingleRequestDTO requests
+            @Valid @RequestBody IDRequestDTO requests
     ){
         MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO = new MandatoryHeaderRequestDTO(flowId,validateOnly);
         return
@@ -135,7 +131,7 @@ public class PortController {
     }
 
     @Operation(summary = "Get List Role", description = "Get List of Role", tags = { "Role" } )
-    @PostMapping("/v1/0/get-list")
+    @PostMapping("/get-list")
     public Mono<ResponseEntity<BaseGetResponseDTO<CustomPageImpl<MsPortViewDTO>>>> getListUserRole(
             @RequestHeader(name = "X-FLOW-ID", required = false) String flowId,
             @RequestHeader(name = "X-VALIDATE-ONLY", required = false) String validateOnly,

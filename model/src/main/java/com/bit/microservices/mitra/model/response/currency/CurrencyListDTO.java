@@ -27,6 +27,8 @@ public class CurrencyListDTO implements Serializable {
     private Boolean isDeleted;
 
     private String deletedReason;
+    private OffsetDateTime syncDate;
+
 
     private OffsetDateTime createdDate;
     private String createdBy;
@@ -34,7 +36,7 @@ public class CurrencyListDTO implements Serializable {
     private String modifiedBy;
 
     public CurrencyListDTO(String id, String code, String name, Boolean isActive,
-                           String remarks, Boolean isDeleted, String deletedReason,
+                           String remarks, Boolean isDeleted, String deletedReason,LocalDateTime syncDate,
                            LocalDateTime createdDate, String createdBy, LocalDateTime modifiedDate,
                             String modifiedBy){
         this.id=id;
@@ -44,6 +46,7 @@ public class CurrencyListDTO implements Serializable {
         this.remarks =remarks;
         this.isDeleted = isDeleted;
         this.deletedReason =deletedReason;
+        this.syncDate= syncDate.atOffset(ZoneOffset.UTC);
         this.createdDate=createdDate.atOffset(ZoneOffset.UTC);
         this.createdBy = createdBy;
         this.modifiedDate = modifiedDate.atOffset(ZoneOffset.UTC);

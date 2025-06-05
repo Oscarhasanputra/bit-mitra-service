@@ -35,7 +35,7 @@ public class MsPort extends AuditField implements Serializable {
     @PrePersist
     private void ensureId(){
         if(Objects.isNull(this.id) || this.id.isEmpty()){
-            this.id= UUID.randomUUID().toString();
+            this.id= String.join("~",this.code,UUID.randomUUID().toString());
         }
     }
 
@@ -53,11 +53,30 @@ public class MsPort extends AuditField implements Serializable {
     @Column(name = "type",columnDefinition = "varchar(255)",nullable = false)
     private PortTypeEnum type;
 
-    @Column(name = "city",columnDefinition = "varchar(255)",nullable = false)
-    private String city;
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "ms_city_id", referencedColumnName = "id", insertable = false, updatable = false)
+    })
+    private MsCity msCity;
 
-    @Column(name = "country",columnDefinition = "varchar(255)",nullable = false)
-    private String country;
+
+    @Column(name = "ms_city_id",columnDefinition = "varchar(255)",nullable = false)
+    private String cityId;
+
+    @Column(name = "ms_city_Code",columnDefinition = "varchar(255)",nullable = false)
+    private String cityCode;
+
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "ms_country_id", referencedColumnName = "id", insertable = false, updatable = false)
+    })
+    private MsCountry msCountry;
+
+    @Column(name = "ms_country_id",columnDefinition = "varchar(255)",nullable = false)
+    private String countryId;
+
+    @Column(name = "ms_country_code",columnDefinition = "varchar(255)",nullable = false)
+    private String countryCode;
 
     @Column(name = "pic",columnDefinition = "varchar(255)",nullable = false)
     private String pic;
@@ -68,7 +87,7 @@ public class MsPort extends AuditField implements Serializable {
     @Column(name = "is_active",columnDefinition = "boolean",nullable = false)
     private Boolean isActive = true;
 
-    @Column(name = "remarks",columnDefinition = "varchar(255)",nullable = false)
+    @Column(name = "remarks",columnDefinition = "varchar(255)",nullable = true)
     private String remarks="";
 
     @Column(name = "is_deleted",columnDefinition = "boolean",nullable = false)

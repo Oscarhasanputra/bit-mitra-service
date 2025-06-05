@@ -8,7 +8,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 @Data
-public class GetSingleRequestDTO implements Serializable {
+public class IDRequestDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -2677175903924050893L;

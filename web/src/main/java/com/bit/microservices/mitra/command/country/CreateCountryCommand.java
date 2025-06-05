@@ -8,7 +8,7 @@ import com.bit.microservices.mitra.model.response.BaseResponseDTO;
 
 import java.util.List;
 
-public interface CreateCountryCommand extends Command<List<BaseResponseDTO>, List<CountryAPIResponseDTO>> {
+public interface CreateCountryCommand extends Command<BaseGetResponseDTO, List<CountryAPIResponseDTO>> {
     @Override
     default boolean isNeedValidateHeader() {
         return false;

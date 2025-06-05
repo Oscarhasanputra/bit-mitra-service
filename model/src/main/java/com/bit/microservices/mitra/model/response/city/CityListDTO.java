@@ -34,8 +34,6 @@ public class CityListDTO implements Serializable {
 
     private String provinceCode;
 
-    private String provinceName;
-
     private Boolean isActive;
 
     private String remarks;
@@ -43,6 +41,7 @@ public class CityListDTO implements Serializable {
     private Boolean isDeleted;
 
     private String deletedReason;
+    private OffsetDateTime syncDate;
 
     private OffsetDateTime createdDate;
 
@@ -52,15 +51,14 @@ public class CityListDTO implements Serializable {
 
     private String modifiedBy;
 
-    public CityListDTO(String id, String code, String name, String provinceCode,
-                       String provinceName, Boolean isActive, String remarks, Boolean isDeleted,
-                       String deletedReason, LocalDateTime createdDate, String createdBy,
+    public CityListDTO(String id, String code, String name, String provinceCode,Boolean isActive, String remarks, Boolean isDeleted,
+                       String deletedReason,LocalDateTime syncDate, LocalDateTime createdDate, String createdBy,
                        LocalDateTime modifiedDate, String modifiedBy){
         this.id=id;
         this.code= code;
         this.name =name;
         this.provinceCode = provinceCode;
-        this.provinceName = provinceName;
+        this.syncDate = syncDate.atOffset(ZoneOffset.UTC);
         this.isActive =isActive;
         this.remarks = remarks;
         this.isDeleted = isDeleted;

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public interface CreateCityCommand extends Command<List<BaseResponseDTO>, CityByCountryDTO> {
+public interface CreateCityCommand extends Command<BaseGetResponseDTO, CityByCountryDTO> {
     @Override
     default boolean isNeedValidateHeader() {
         return false;

@@ -1,6 +1,6 @@
 package com.bit.microservices.mitra.repository.impl;
 
-import com.bit.microservices.mitra.model.constant.country.CountrySearchField;
+import com.bit.microservices.mitra.model.constant.bank.MsBankSearchField;
 import com.bit.microservices.mitra.model.entity.QMsBank;
 import com.bit.microservices.mitra.model.response.bank.MsBankViewDTO;
 import com.bit.microservices.mitra.utils.FilterByBooleanExpression;
@@ -97,7 +97,7 @@ public class QMsBankRepositoryImpl implements QMsBankRepository {
                     .fetch();
         } else {
             // Sort
-            List<OrderSpecifier<?>> orderSpecifiers = FilterByBooleanExpression.getOrderSpecifiers(pageable.getSort(),qMsBank, CountrySearchField.class);
+            List<OrderSpecifier<?>> orderSpecifiers = FilterByBooleanExpression.getOrderSpecifiers(pageable.getSort(),qMsBank, MsBankSearchField.class);
 
             result = queryResult
                     .offset(offset)

@@ -1,6 +1,6 @@
 package com.bit.microservices.mitra.repository.impl;
 
-import com.bit.microservices.mitra.model.constant.country.CountrySearchField;
+import com.bit.microservices.mitra.model.constant.currency.CurrencySearchField;
 import com.bit.microservices.mitra.model.entity.QMsCurrency;
 import com.bit.microservices.mitra.model.response.currency.CurrencyListDTO;
 import com.bit.microservices.mitra.utils.FilterByBooleanExpression;
@@ -42,6 +42,7 @@ public class QMsCurrencyRepositoryImpl implements QMsCurrencyRepository {
                         qMsCurrency.remarks,
                         qMsCurrency.isDeleted,
                         qMsCurrency.deletedReason,
+                        qMsCurrency.syncDate,
                         qMsCurrency.createdDate,
                         qMsCurrency.createdBy,
                         qMsCurrency.modifiedDate,
@@ -65,7 +66,7 @@ public class QMsCurrencyRepositoryImpl implements QMsCurrencyRepository {
                     .fetch();
         } else {
             // Sort
-            List<OrderSpecifier<?>> orderSpecifiers = FilterByBooleanExpression.getOrderSpecifiers(pageable.getSort(),qMsCurrency, CountrySearchField.class);
+            List<OrderSpecifier<?>> orderSpecifiers = FilterByBooleanExpression.getOrderSpecifiers(pageable.getSort(),qMsCurrency, CurrencySearchField.class);
 
             result = queryResult
                     .offset(offset)

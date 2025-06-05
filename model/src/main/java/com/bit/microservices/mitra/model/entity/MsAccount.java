@@ -32,7 +32,7 @@ public class MsAccount extends AuditField implements Serializable {
     @PrePersist
     private void ensureId(){
         if(Objects.isNull(this.id) || this.id.isEmpty()){
-            this.id= UUID.randomUUID().toString();
+            this.id= String.join("~",this.code,UUID.randomUUID().toString());
         }
     }
 

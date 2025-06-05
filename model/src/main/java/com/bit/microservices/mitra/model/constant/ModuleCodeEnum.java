@@ -12,7 +12,9 @@ public enum ModuleCodeEnum {
 
     BANK("008004","bank"),
 
-    PORT("008005","port")
+    PORT("008005","port"),
+
+    ACCOUNT("008006","account")
 
     ;
     private final String code;

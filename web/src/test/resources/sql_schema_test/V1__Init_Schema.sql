@@ -12,7 +12,6 @@ CREATE TABLE "public"."revinfo" (
   "revtstmp" int8
 )
 ;
-
 -- ----------------------------
 -- Table structure for ms_account
 -- ----------------------------
@@ -115,8 +114,8 @@ CREATE TABLE "public"."ms_city" (
   "is_deleted" bool NOT NULL,
   "name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "province_code" varchar(255) COLLATE "pg_catalog"."default",
-  "province_name" varchar(255) COLLATE "pg_catalog"."default",
-  "remarks" varchar(255) COLLATE "pg_catalog"."default" NOT NULL
+  "remarks" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "sync_date" timestamp(6) NOT NULL
 )
 ;
 
@@ -138,8 +137,8 @@ CREATE TABLE "public"."ms_city_aud" (
   "is_deleted" bool,
   "name" varchar(255) COLLATE "pg_catalog"."default",
   "province_code" varchar(255) COLLATE "pg_catalog"."default",
-  "province_name" varchar(255) COLLATE "pg_catalog"."default",
-  "remarks" varchar(255) COLLATE "pg_catalog"."default"
+  "remarks" varchar(255) COLLATE "pg_catalog"."default",
+  "sync_date" timestamp(6)
 )
 ;
 
@@ -158,7 +157,8 @@ CREATE TABLE "public"."ms_country" (
   "is_active" bool NOT NULL,
   "is_deleted" bool NOT NULL,
   "name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-  "remarks" varchar(255) COLLATE "pg_catalog"."default" NOT NULL
+  "remarks" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "sync_date" timestamp(6) NOT NULL
 )
 ;
 
@@ -179,7 +179,8 @@ CREATE TABLE "public"."ms_country_aud" (
   "is_active" bool,
   "is_deleted" bool,
   "name" varchar(255) COLLATE "pg_catalog"."default",
-  "remarks" varchar(255) COLLATE "pg_catalog"."default"
+  "remarks" varchar(255) COLLATE "pg_catalog"."default",
+  "sync_date" timestamp(6)
 )
 ;
 
@@ -198,7 +199,8 @@ CREATE TABLE "public"."ms_currency" (
   "is_active" bool NOT NULL,
   "is_deleted" bool NOT NULL,
   "name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-  "remarks" varchar(255) COLLATE "pg_catalog"."default" NOT NULL
+  "remarks" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "sync_date" timestamp(6) NOT NULL
 )
 ;
 
@@ -219,7 +221,8 @@ CREATE TABLE "public"."ms_currency_aud" (
   "is_active" bool,
   "is_deleted" bool,
   "name" varchar(255) COLLATE "pg_catalog"."default",
-  "remarks" varchar(255) COLLATE "pg_catalog"."default"
+  "remarks" varchar(255) COLLATE "pg_catalog"."default",
+  "sync_date" timestamp(6)
 )
 ;
 
@@ -333,55 +336,6 @@ CREATE TABLE "public"."ms_mitra_locationaddress_aud" (
 )
 ;
 
--- ----------------------------
--- Table structure for ms_port
--- ----------------------------
-DROP TABLE IF EXISTS "public"."ms_port" CASCADE;
-CREATE TABLE "public"."ms_port" (
-  "id" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-  "created_by" varchar(255) COLLATE "pg_catalog"."default",
-  "created_date" timestamp(6) NOT NULL,
-  "modified_by" varchar(255) COLLATE "pg_catalog"."default",
-  "modified_date" timestamp(6),
-  "city" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-  "code" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-  "country" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-  "deleted_reason" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-  "is_active" bool NOT NULL,
-  "is_deleted" bool NOT NULL,
-  "name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-  "phone_number" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-  "pic" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-  "remarks" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-  "type" varchar(255) COLLATE "pg_catalog"."default" NOT NULL
-)
-;
-
--- ----------------------------
--- Table structure for ms_port_aud
--- ----------------------------
-DROP TABLE IF EXISTS "public"."ms_port_aud" CASCADE;
-CREATE TABLE "public"."ms_port_aud" (
-  "id" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-  "rev" int4 NOT NULL,
-  "revtype" int2,
-  "created_by" varchar(255) COLLATE "pg_catalog"."default",
-  "created_date" timestamp(6),
-  "modified_by" varchar(255) COLLATE "pg_catalog"."default",
-  "modified_date" timestamp(6),
-  "city" varchar(255) COLLATE "pg_catalog"."default",
-  "code" varchar(255) COLLATE "pg_catalog"."default",
-  "country" varchar(255) COLLATE "pg_catalog"."default",
-  "deleted_reason" varchar(255) COLLATE "pg_catalog"."default",
-  "is_active" bool,
-  "is_deleted" bool,
-  "name" varchar(255) COLLATE "pg_catalog"."default",
-  "phone_number" varchar(255) COLLATE "pg_catalog"."default",
-  "pic" varchar(255) COLLATE "pg_catalog"."default",
-  "remarks" varchar(255) COLLATE "pg_catalog"."default",
-  "type" varchar(255) COLLATE "pg_catalog"."default"
-)
-;
 
 -- ----------------------------
 -- Table structure for msc_owner
@@ -397,6 +351,7 @@ CREATE TABLE "public"."msc_owner" (
   "identity_no" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "identity_type" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "mobile_number" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "ms_account_id" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL
 )
 ;
@@ -417,18 +372,12 @@ CREATE TABLE "public"."msc_owner_aud" (
   "identity_no" varchar(255) COLLATE "pg_catalog"."default",
   "identity_type" varchar(255) COLLATE "pg_catalog"."default",
   "mobile_number" varchar(255) COLLATE "pg_catalog"."default",
+  "ms_account_id" varchar(255) COLLATE "pg_catalog"."default",
   "name" varchar(255) COLLATE "pg_catalog"."default"
 )
-
--- ----------------------------
--- Table structure for revinfo
--- ----------------------------
---DROP TABLE IF EXISTS "public"."revinfo" CASCADE;
---CREATE TABLE "public"."revinfo" (
---  "rev" int4 NOT NULL,
---  "revtstmp" int8
---)
 ;
+
+
 
 -- ----------------------------
 -- Primary Key structure for table ms_account
@@ -500,25 +449,6 @@ ALTER TABLE "public"."ms_mitra_locationaddress" ADD CONSTRAINT "ms_mitra_locatio
 -- ----------------------------
 ALTER TABLE "public"."ms_mitra_locationaddress_aud" ADD CONSTRAINT "ms_mitra_locationaddress_aud_pkey" PRIMARY KEY ("rev", "id");
 
--- ----------------------------
--- Checks structure for table ms_port
--- ----------------------------
-ALTER TABLE "public"."ms_port" ADD CONSTRAINT "ms_port_type_check" CHECK (type::text = ANY (ARRAY['SEAPORT'::character varying, 'AIRPORT'::character varying, 'INLANDPORT'::character varying]::text[]));
-
--- ----------------------------
--- Primary Key structure for table ms_port
--- ----------------------------
-ALTER TABLE "public"."ms_port" ADD CONSTRAINT "ms_port_pkey" PRIMARY KEY ("id");
-
--- ----------------------------
--- Checks structure for table ms_port_aud
--- ----------------------------
-ALTER TABLE "public"."ms_port_aud" ADD CONSTRAINT "ms_port_aud_type_check" CHECK (type::text = ANY (ARRAY['SEAPORT'::character varying, 'AIRPORT'::character varying, 'INLANDPORT'::character varying]::text[]));
-
--- ----------------------------
--- Primary Key structure for table ms_port_aud
--- ----------------------------
-ALTER TABLE "public"."ms_port_aud" ADD CONSTRAINT "ms_port_aud_pkey" PRIMARY KEY ("rev", "id");
 
 -- ----------------------------
 -- Primary Key structure for table msc_owner
@@ -571,11 +501,99 @@ ALTER TABLE "public"."ms_mitra_aud" ADD CONSTRAINT "fk7qa7un42sotcxe198iavd1mpp"
 ALTER TABLE "public"."ms_mitra_locationaddress_aud" ADD CONSTRAINT "fksgfp71c83aha7ssixxhpu6a0c" FOREIGN KEY ("rev") REFERENCES "public"."revinfo" ("rev") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- ----------------------------
--- Foreign Keys structure for table ms_port_aud
+-- Foreign Keys structure for table msc_owner
 -- ----------------------------
-ALTER TABLE "public"."ms_port_aud" ADD CONSTRAINT "fkjt23b1w05gqp9i7buhg845ike" FOREIGN KEY ("rev") REFERENCES "public"."revinfo" ("rev") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "public"."msc_owner" ADD CONSTRAINT "fki3ywqgjf9ntit507booyuqvkh" FOREIGN KEY ("ms_account_id") REFERENCES "public"."ms_account" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- ----------------------------
 -- Foreign Keys structure for table msc_owner_aud
 -- ----------------------------
 ALTER TABLE "public"."msc_owner_aud" ADD CONSTRAINT "fkcldg83lkp4c114t9v0mjd2lfv" FOREIGN KEY ("rev") REFERENCES "public"."revinfo" ("rev") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- ----------------------------
+-- Table structure for ms_port
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."ms_port";
+CREATE TABLE "public"."ms_port" (
+  "id" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "created_by" varchar(255) COLLATE "pg_catalog"."default",
+  "created_date" timestamp(6) NOT NULL,
+  "modified_by" varchar(255) COLLATE "pg_catalog"."default",
+  "modified_date" timestamp(6),
+  "address" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "ms_city_code" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "ms_city_id" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "code" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "ms_country_code" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "ms_country_id" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "deleted_reason" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "is_active" bool NOT NULL,
+  "is_deleted" bool NOT NULL,
+  "name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "phone_number" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "pic" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "remarks" varchar(255) COLLATE "pg_catalog"."default",
+  "type" varchar(255) COLLATE "pg_catalog"."default" NOT NULL
+)
+;
+
+-- ----------------------------
+-- Table structure for ms_port_aud
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."ms_port_aud";
+CREATE TABLE "public"."ms_port_aud" (
+  "id" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "rev" int4 NOT NULL,
+  "revtype" int2,
+  "created_by" varchar(255) COLLATE "pg_catalog"."default",
+  "created_date" timestamp(6),
+  "modified_by" varchar(255) COLLATE "pg_catalog"."default",
+  "modified_date" timestamp(6),
+  "address" varchar(255) COLLATE "pg_catalog"."default",
+  "ms_city_code" varchar(255) COLLATE "pg_catalog"."default",
+  "ms_city_id" varchar(255) COLLATE "pg_catalog"."default",
+  "code" varchar(255) COLLATE "pg_catalog"."default",
+  "ms_country_code" varchar(255) COLLATE "pg_catalog"."default",
+  "ms_country_id" varchar(255) COLLATE "pg_catalog"."default",
+  "deleted_reason" varchar(255) COLLATE "pg_catalog"."default",
+  "is_active" bool,
+  "is_deleted" bool,
+  "name" varchar(255) COLLATE "pg_catalog"."default",
+  "phone_number" varchar(255) COLLATE "pg_catalog"."default",
+  "pic" varchar(255) COLLATE "pg_catalog"."default",
+  "remarks" varchar(255) COLLATE "pg_catalog"."default",
+  "type" varchar(255) COLLATE "pg_catalog"."default"
+)
+;
+
+-- ----------------------------
+-- Checks structure for table ms_port
+-- ----------------------------
+ALTER TABLE "public"."ms_port" ADD CONSTRAINT "ms_port_type_check" CHECK (type::text = ANY (ARRAY['SEAPORT'::character varying, 'AIRPORT'::character varying, 'INLANDPORT'::character varying]::text[]));
+
+-- ----------------------------
+-- Primary Key structure for table ms_port
+-- ----------------------------
+ALTER TABLE "public"."ms_port" ADD CONSTRAINT "ms_port_pkey" PRIMARY KEY ("id");
+
+-- ----------------------------
+-- Checks structure for table ms_port_aud
+-- ----------------------------
+ALTER TABLE "public"."ms_port_aud" ADD CONSTRAINT "ms_port_aud_type_check" CHECK (type::text = ANY (ARRAY['SEAPORT'::character varying, 'AIRPORT'::character varying, 'INLANDPORT'::character varying]::text[]));
+
+-- ----------------------------
+-- Primary Key structure for table ms_port_aud
+-- ----------------------------
+ALTER TABLE "public"."ms_port_aud" ADD CONSTRAINT "ms_port_aud_pkey" PRIMARY KEY ("rev", "id");
+
+-- ----------------------------
+-- Foreign Keys structure for table ms_port
+-- ----------------------------
+ALTER TABLE "public"."ms_port" ADD CONSTRAINT "fkhh1wkq5r2h1brrk14xcs7809t" FOREIGN KEY ("ms_country_id") REFERENCES "public"."ms_country" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "public"."ms_port" ADD CONSTRAINT "fkskld2os2mnihwhis65g1ureg4" FOREIGN KEY ("ms_city_id") REFERENCES "public"."ms_city" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- ----------------------------
+-- Foreign Keys structure for table ms_port_aud
+-- ----------------------------
+ALTER TABLE "public"."ms_port_aud" ADD CONSTRAINT "fkjt23b1w05gqp9i7buhg845ike" FOREIGN KEY ("rev") REFERENCES "public"."revinfo" ("rev") ON DELETE NO ACTION ON UPDATE NO ACTION;

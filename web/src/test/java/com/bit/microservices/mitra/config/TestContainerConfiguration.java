@@ -26,8 +26,4 @@ public class TestContainerConfiguration {
         return AbstractMitraTest.REDIS_CONTAINER;
     }
 
-    @Bean
-    public HttpService httpService(){
-        return Mockito.mock(HttpService.class);
-    }
 }

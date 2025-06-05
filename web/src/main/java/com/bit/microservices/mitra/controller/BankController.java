@@ -1,10 +1,7 @@
 package com.bit.microservices.mitra.controller;
 
 import com.bit.microservices.mitra.command.bank.CreateMsBankCommand;
-import com.bit.microservices.mitra.command.bank.DeleteMsBankCommand;
-import com.bit.microservices.mitra.command.bank.impl.DeleteMsBankCommandImpl;
 import com.bit.microservices.mitra.command.bank.reactive.*;
-import com.bit.microservices.mitra.command.city.reactive.SyncCityCommandReactive;
 import com.bit.microservices.mitra.command.executor.CommandExecutor;
 import com.bit.microservices.mitra.filter.ReactiveSecurityContextHolderData;
 import com.bit.microservices.mitra.model.CustomPageImpl;
@@ -15,7 +12,6 @@ import com.bit.microservices.mitra.model.constant.ResponseStatusEnum;
 import com.bit.microservices.mitra.model.request.*;
 import com.bit.microservices.mitra.model.request.bank.MsBankCreateRequestDTO;
 import com.bit.microservices.mitra.model.request.bank.MsBankUpdateRequestDTO;
-import com.bit.microservices.mitra.model.request.city.CountryIDRequestDTO;
 import com.bit.microservices.mitra.model.response.BaseGetResponseDTO;
 import com.bit.microservices.mitra.model.response.BaseResponseDTO;
 import com.bit.microservices.mitra.model.response.MainResponseDTO;
@@ -38,7 +34,7 @@ import java.util.List;
 @RequestMapping("/bank/v1/0")
 public class BankController {
 
-    private final ModuleCodeEnum MODULE= ModuleCodeEnum.CITY;
+    private final ModuleCodeEnum MODULE= ModuleCodeEnum.BANK;
 
     @Autowired
     private CommandExecutor commandExecutor;
@@ -119,7 +115,7 @@ public class BankController {
     public Mono<ResponseEntity<ViewMainResponseDTO<MsBankViewDTO>>> getMsBank(
             @RequestHeader(name = "X-FLOW-ID", required = false) String flowId,
             @RequestHeader(name = "X-VALIDATE-ONLY", required = false) String validateOnly,
-            @RequestBody GetSingleRequestDTO requestDTO
+            @RequestBody IDRequestDTO requestDTO
             ) {
         MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO = new MandatoryHeaderRequestDTO(flowId,validateOnly);
         return commandExecutor.executeReactive(GetMsBankCommandReactive.class, requestDTO, MODULE, CrudCodeEnum.GET_CODE,mandatoryHeaderRequestDTO)

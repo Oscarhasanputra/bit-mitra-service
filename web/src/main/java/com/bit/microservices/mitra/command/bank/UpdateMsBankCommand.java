@@ -7,4 +7,8 @@ import com.bit.microservices.mitra.model.response.BaseResponseDTO;
 import java.util.List;
 
 public interface UpdateMsBankCommand extends Command<List<BaseResponseDTO>,List<MsBankUpdateRequestDTO>> {
+    @Override
+    default boolean isNeedValidate(List<MsBankUpdateRequestDTO> request) {
+        return true;
+    }
 }

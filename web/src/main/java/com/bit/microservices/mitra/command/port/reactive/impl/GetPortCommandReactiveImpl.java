@@ -5,7 +5,7 @@ import com.bit.microservices.mitra.exception.BadRequestException;
 import com.bit.microservices.mitra.model.constant.CrudCodeEnum;
 import com.bit.microservices.mitra.model.constant.ModuleCodeEnum;
 import com.bit.microservices.mitra.model.constant.ResponseCodeMessageEnum;
-import com.bit.microservices.mitra.model.request.GetSingleRequestDTO;
+import com.bit.microservices.mitra.model.request.IDRequestDTO;
 import com.bit.microservices.mitra.model.request.MandatoryHeaderRequestDTO;
 import com.bit.microservices.mitra.model.response.port.MsPortViewDTO;
 import com.bit.microservices.mitra.model.response.view.ViewMainResponseDTO;
@@ -31,7 +31,7 @@ public class GetPortCommandReactiveImpl implements GetPortCommandReactive {
 
 
     @Override
-    public Mono<ViewMainResponseDTO<MsPortViewDTO>> execute(GetSingleRequestDTO request, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
+    public Mono<ViewMainResponseDTO<MsPortViewDTO>> execute(IDRequestDTO request, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
        return Mono.fromCallable(()->{
            MsPortViewDTO msPortViewDTO = this.msPortRedisRepository.load(request.getId());
 

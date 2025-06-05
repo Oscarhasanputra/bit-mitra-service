@@ -12,6 +12,8 @@ import java.io.Serializable;
 public enum CountrySearchField implements EnumColumnFilterBy {
     CODE(null, null, "code", "code",FilterColumnRequestType.STRING, null),
     NAME(null, null, "name", "name", FilterColumnRequestType.STRING, null),
+    ACTIVE(null, null, "isActive", "active", FilterColumnRequestType.BOOLEAN, null),
+    DELETED(null, null, "isDeleted", "deleted", FilterColumnRequestType.BOOLEAN, null),
     ;
 
     private final Class<?> childPath;

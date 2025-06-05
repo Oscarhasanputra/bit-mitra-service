@@ -68,10 +68,10 @@ public class GetListMsBankCommandReactiveImpl implements GetListMsBankCommandRea
 
             Pageable pageable = PageableUtils.pageableUtils(request);
             BooleanBuilder querySearch = FilterByBooleanExpression.constructPredicate(request,qMsBank,QMsBank.class,MsBankSearchField.class);
-            System.out.println("running nich 1");
+
             try {
                 Page<MsBankViewDTO> page = this.qMsBankRepository.findAll(querySearch, pageable);
-                System.out.println("running nich 2");
+
                 response = new CustomPageImpl<>(page);
             } catch (JDBCConnectionException jdbcConnectionException) {
                 throw new DatabaseValidationException(module, crud, ResponseCodeMessageEnum.FAILED_DATABASE_OFFLINE, "Connection Failed!");

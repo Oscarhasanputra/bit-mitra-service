@@ -1,7 +1,6 @@
 package com.bit.microservices.mitra.model.constant.msport;
 
 import com.bit.microservices.mitra.model.constant.EnumAction;
-import com.bit.microservices.mitra.model.constant.RoleTypeEnum;
 import lombok.Getter;
 
 import java.util.HashMap;
@@ -26,16 +25,16 @@ public enum PortTypeEnum implements EnumAction {
     }
 
 
-    private static HashMap<String, RoleTypeEnum> map= new LinkedHashMap();
+    private static HashMap<String, PortTypeEnum> map= new LinkedHashMap();
 
     static {
-        for(RoleTypeEnum status: RoleTypeEnum.values()){
-            map.put(status.type,status);
+        for(PortTypeEnum status: PortTypeEnum.values()){
+            map.put(status.fieldType,status);
         }
     }
 
-    public static RoleTypeEnum getValue(String label) throws Exception{
-        RoleTypeEnum status =  map.get(label);
+    public static PortTypeEnum getValue(String label) throws Exception{
+        PortTypeEnum status =  map.get(label);
         if(Objects.isNull(status))
             throw new Exception("Enum Tidak Terdaftar");
         return status;

@@ -29,7 +29,7 @@ public class SyncCurrencyCommandReactiveImpl implements SyncCurrencyCommandReact
     @Autowired
     private CommandExecutor commandExecutor;
     @Override
-    public Mono<List<BaseResponseDTO>> execute(Void request, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
+    public Mono<BaseGetResponseDTO> execute(Void request, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
         return this.httpService.getCurrencyList().flatMap((currencyAPIResponseDTO)->{
             return ReactiveSecurityContextHolderData.assignContextData(
                     this.commandExecutor.executeAsReactive(CreateCurrencyCommand.class,currencyAPIResponseDTO.getCurrencyList(),module,crud,mandatoryHeaderRequestDTO)
@@ -39,7 +39,7 @@ public class SyncCurrencyCommandReactiveImpl implements SyncCurrencyCommandReact
                 return Mono.error(exception);
             }else{
 
-                return Mono.error(new BadRequestException(module,crud, ResponseCodeMessageEnum.FAILED_CUSTOM,exception.getMessage()));
+                return Mono.error(new BadRequestException(module,crud, ResponseCodeMessageEnum.FAILED_CONNECTION_TIMEOUT,""));
             }
         })
                 ;

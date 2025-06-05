@@ -6,7 +6,7 @@ import com.bit.microservices.mitra.model.response.BaseResponseDTO;
 
 import java.util.List;
 
-public interface SyncCountryCommandReactive extends CommandReactive<List<BaseResponseDTO>,Void> {
+public interface SyncCountryCommandReactive extends CommandReactive<BaseGetResponseDTO,Void> {
     @Override
     default boolean isNeedValidate(Void request) {
         return false;

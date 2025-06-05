@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -29,6 +30,7 @@ public class DeleteMsBankCommandImpl extends AbstractMitraCommand implements Del
     private MsBankRepository msBankRepository;
 
     @Override
+    @Transactional
     public List<BaseResponseDTO> execute(List<DeleteRequestDTO> requests, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
         List<BaseResponseDTO> errorList = new ArrayList<>();
         List<BaseResponseDTO> responseList = new ArrayList<>();

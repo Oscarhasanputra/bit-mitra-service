@@ -23,6 +23,7 @@ public class CountryListDTO implements Serializable {
     private String remarks;
     private Boolean isDeleted;
     private String deletedReason;
+    private OffsetDateTime syncDate;
     private String createdBy;
     private OffsetDateTime createdDate;
     private String modifiedBy;
@@ -30,7 +31,7 @@ public class CountryListDTO implements Serializable {
 
 
     public CountryListDTO(String id,String name, String code, Boolean isActive,
-                          String remarks, Boolean isDeleted, String deletedReason,
+                          String remarks, Boolean isDeleted, String deletedReason,LocalDateTime syncDate,
                           String createdBy, LocalDateTime createdDate,String modifiedBy, LocalDateTime modifiedDate){
 
         this.id = id;
@@ -40,6 +41,7 @@ public class CountryListDTO implements Serializable {
         this.remarks = remarks;
         this.isDeleted = isDeleted;
         this.deletedReason = deletedReason;
+        this.syncDate  =syncDate.atOffset(ZoneOffset.UTC);
         this.createdBy = createdBy;
         this.createdDate = createdDate.atOffset(ZoneOffset.UTC);
         this.modifiedBy = modifiedBy;

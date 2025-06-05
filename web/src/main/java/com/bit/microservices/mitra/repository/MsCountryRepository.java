@@ -11,6 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface MsCountryRepository extends RevisionRepository<MsCountry, String, Integer>, BaseJpaRepository<MsCountry, String>, QuerydslPredicateExecutor<MsCountry> {
+    Optional<MsCountry> findByIdAndCode(String id, String code);
     Optional<MsCountry> findByCodeAndIsDeleted(String code, Boolean isDeleted);
 
 }

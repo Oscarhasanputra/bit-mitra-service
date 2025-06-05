@@ -44,7 +44,7 @@ public class CityController{
 
     @PostMapping("/_sync-from-google")
     @Operation(summary = "", description = "", tags = {"City"})
-    public Mono<ResponseEntity<MainResponseDTO<List<BaseResponseDTO>>>>  syncCityFromOutsource(
+    public Mono<ResponseEntity<BaseGetResponseDTO>>  syncCityFromOutsource(
             @RequestHeader(name = "X-FLOW-ID", required = false) String flowId,
             @RequestHeader(name = "X-VALIDATE-ONLY", required = false) String validateOnly,
             @RequestBody CountryIDRequestDTO requestDTO
@@ -54,7 +54,7 @@ public class CityController{
                 .map(response -> {
                     log.info(flowId);
 
-                    return ResponseEntity.ok(new MainResponseDTO<>(ResponseStatusEnum.SUCCESS.responseMessage, ResponseStatusEnum.SUCCESS.code, response));
+                    return ResponseEntity.ok(response);
                 })
                 .doOnError(unused -> log.error(flowId))
                 .subscribeOn(Schedulers.boundedElastic());
@@ -68,7 +68,7 @@ public class CityController{
             @RequestBody List<UpdateProvinceCodeRequestDTO> requestDTO
     ) {
         MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO = new MandatoryHeaderRequestDTO(flowId,validateOnly);
-        return commandExecutor.executeAsReactive(UpdateProvinceCodeCityCommand.class, requestDTO, MODULE, CrudCodeEnum.SYNC_CODE,mandatoryHeaderRequestDTO)
+        return commandExecutor.executeAsReactive(UpdateProvinceCodeCityCommand.class, requestDTO, MODULE, CrudCodeEnum.UPDATE_PROVINCE_CODE,mandatoryHeaderRequestDTO)
                 .map(x -> {
                     log.info(flowId);
                     return ResponseEntity.ok(new MainResponseDTO<>(ResponseStatusEnum.SUCCESS.responseMessage, ResponseStatusEnum.SUCCESS.code, x));

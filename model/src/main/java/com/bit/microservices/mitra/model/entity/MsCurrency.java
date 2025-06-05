@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Types;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -55,4 +56,7 @@ public class MsCurrency extends AuditField implements Serializable {
 
     @Column(name = "deleted_reason",columnDefinition = "varchar(255)",nullable = false)
     private String deletedReason="";
+
+    @Column(name = "sync_date",columnDefinition = "timestamp",nullable = false)
+    private LocalDateTime syncDate;
 }

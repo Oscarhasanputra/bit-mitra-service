@@ -39,7 +39,7 @@ public class CurrencyController {
 
     @PostMapping("/_sync-from-google")
     @Operation(summary = "", description = "", tags = {"Currency"})
-    public Mono<ResponseEntity<MainResponseDTO<List<BaseResponseDTO>>>> syncCurrency(
+    public Mono<ResponseEntity<BaseGetResponseDTO>> syncCurrency(
             @RequestHeader(name = "X-FLOW-ID", required = false) String flowId,
             @RequestHeader(name = "X-VALIDATE-ONLY", required = false) String validateOnly
     ) {
@@ -47,7 +47,7 @@ public class CurrencyController {
         return commandExecutor.executeReactive(SyncCurrencyCommandReactive.class, null, MODULE, CrudCodeEnum.SYNC_CODE,mandatoryHeaderRequestDTO)
                 .map(response -> {
                     log.info(flowId);
-                    return ResponseEntity.ok(new MainResponseDTO<>(ResponseStatusEnum.SUCCESS.responseMessage, ResponseStatusEnum.SUCCESS.code, response));
+                    return ResponseEntity.ok(response);
                 })
                 .doOnError(unused -> log.error(flowId))
                 .subscribeOn(Schedulers.boundedElastic());
@@ -62,7 +62,7 @@ public class CurrencyController {
             @RequestBody SearchRequestDTO request
     ) {
         MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO = new MandatoryHeaderRequestDTO(flowId,validateOnly);
-        return commandExecutor.executeReactive(GetListCurrencyCommandReactive.class, request, MODULE, CrudCodeEnum.SYNC_CODE,mandatoryHeaderRequestDTO)
+        return commandExecutor.executeReactive(GetListCurrencyCommandReactive.class, request, MODULE, CrudCodeEnum.GETLIST_CODE,mandatoryHeaderRequestDTO)
                 .map(x -> {
                     log.info(flowId);
                     return ResponseEntity.ok(

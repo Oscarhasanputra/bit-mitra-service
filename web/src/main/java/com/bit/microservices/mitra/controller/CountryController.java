@@ -18,6 +18,7 @@ import com.bit.microservices.mitra.model.response.city.CityListDTO;
 import com.bit.microservices.mitra.model.response.country.CountryListDTO;
 import com.bit.microservices.mitra.model.utils.ConstructResponseCode;
 import com.bit.microservices.model.ResultStatus;
+import feign.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class CountryController {
 
     @PostMapping("/_sync-from-google")
     @Operation(summary = "", description = "", tags = {"Country"})
-    public Mono<ResponseEntity<MainResponseDTO<List<BaseResponseDTO>>>> syncCountry(
+    public Mono<ResponseEntity<BaseGetResponseDTO>> syncCountry(
             @RequestHeader(name = "X-FLOW-ID", required = false) String flowId,
             @RequestHeader(name = "X-VALIDATE-ONLY", required = false) String validateOnly
     ) {
@@ -48,7 +49,7 @@ public class CountryController {
         return commandExecutor.executeReactive(SyncCountryCommandReactive.class, null, MODULE, CrudCodeEnum.SYNC_CODE,mandatoryHeaderRequestDTO)
                         .map(response -> {
                             log.info(flowId);
-                            return ResponseEntity.ok(new MainResponseDTO<>(ResponseStatusEnum.SUCCESS.responseMessage, ResponseStatusEnum.SUCCESS.code, response));
+                            return ResponseEntity.ok(response);
                         })
                         .doOnError(unused -> log.error(flowId))
                 .subscribeOn(Schedulers.boundedElastic());

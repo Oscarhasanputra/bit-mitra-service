@@ -39,7 +39,7 @@ public class SyncCityCommandReactiveImpl implements SyncCityCommandReactive {
 
 
     @Override
-    public Mono<List<BaseResponseDTO>> execute(CountryIDRequestDTO request, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
+    public Mono<BaseGetResponseDTO> execute(CountryIDRequestDTO request, ModuleCodeEnum module, CrudCodeEnum crud, MandatoryHeaderRequestDTO mandatoryHeaderRequestDTO) {
 
         return Mono.just(request).flatMap((req)->{
             MsCountry msCountry = this.msCountryRepository.findById(request.getCountryId()).orElseThrow(()->{
@@ -59,7 +59,7 @@ public class SyncCityCommandReactiveImpl implements SyncCityCommandReactive {
                 if(exception instanceof BadRequestException){
                     return Mono.error(exception);
                 }else{
-                    return Mono.error(new BadRequestException(module,crud,ResponseCodeMessageEnum.FAILED_CUSTOM,exception.getMessage()));
+                    return Mono.error(new BadRequestException(module,crud,ResponseCodeMessageEnum.FAILED_CONNECTION_TIMEOUT,""));
                 }
             });
         });

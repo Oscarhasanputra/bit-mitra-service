@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Types;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -35,7 +36,7 @@ public class MsCity extends AuditField implements Serializable {
     @PrePersist
     private void ensureId(){
         if(Objects.isNull(this.id) || this.id.isEmpty()){
-            this.id= UUID.randomUUID().toString();
+            this.id= String.join("~",this.name,UUID.randomUUID().toString());
         }
     }
 
@@ -49,9 +50,6 @@ public class MsCity extends AuditField implements Serializable {
     @Column(name = "province_code",columnDefinition = "varchar(255)")
     private String provinceCode;
 
-    @Column(name = "province_name",columnDefinition = "varchar(255)")
-    private String provinceName;
-
     @Column(name = "is_active",columnDefinition = "boolean",nullable = false)
     private Boolean isActive = true;
 
@@ -63,4 +61,7 @@ public class MsCity extends AuditField implements Serializable {
 
     @Column(name = "deleted_reason",columnDefinition = "varchar(255)",nullable = false)
     private String deletedReason="";
+
+    @Column(name = "sync_date",columnDefinition = "timestamp",nullable = false)
+    private LocalDateTime syncDate;
 }
